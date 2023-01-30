@@ -32,13 +32,13 @@ namespace SO {
 		glm::vec3 color{};
 		//Components
 		TransformComponent transform{};
-		std::unique_ptr<PointLightComponent> pointLight = nullptr;
+		//std::unique_ptr<PointLightComponent> pointLight = nullptr;
 
 		static GameObject createGameObject() {
 			static id_t current_id = 0;
 			return GameObject{ current_id++ };
 		}
-		static GameObject createPointLightGameObject(float intensity = 10.f, float radius = 0.1f, glm::vec3 color = glm::vec3(1.f));
+		//static GameObject createPointLightGameObject(float intensity = 10.f, float radius = 0.1f, glm::vec3 color = glm::vec3(1.f));
 
 		//Copy
 		GameObject(const GameObject&) = delete;

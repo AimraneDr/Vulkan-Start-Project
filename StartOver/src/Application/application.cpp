@@ -19,6 +19,13 @@
 namespace SO {
 	const float MAX_DELTA_TIME{ 0.01 };
 
+	struct GlobalUBO {
+		glm::mat4 projection{ 1.f };
+		glm::mat4 view{ 1.f };
+		glm::vec4 ambientLightColor{ 1.f, 1.f, 1.f, .02f };  // w is intensity
+		glm::vec3 lightPosition{ -1.f };
+		alignas(16) glm::vec4 lightColor{ 1.f };  // w is light intensity
+	};
 
 	App::App() {
 		globalPool = DescriptorPool::Builder(rDevice)
@@ -97,8 +104,8 @@ namespace SO {
 				//update
 				GlobalUBO ubo{};
 				ubo.projection = camera.getProjectionMat();
-				ubo.View = camera.getViewMat();
-				pointLightRenderSystem.update(frameInfo, ubo);
+				ubo.view = camera.getViewMat();
+				//pointLightRenderSystem.update(frameInfo, ubo);
 				uboBuffers[frameIndex]->writeToBuffer(&ubo);
 				uboBuffers[frameIndex]->flush();
 
@@ -237,26 +244,26 @@ namespace SO {
 		gameObjects.emplace(cube2.getID(), std::move(cube2));
 		gameObjects.emplace(cube3.getID(), std::move(cube3));
 
+		//25th
+		//std::vector<glm::vec3> lightColors{
+		//	{1.f, .1f, .1f},
+		//	{.1f, .1f, 1.f},
+		//	{.1f, 1.f, .1f},
+		//	{1.f, 1.f, .1f},
+		//	{.1f, 1.f, 1.f},
+		//	{1.f, 1.f, 1.f}  //
+		//};
 
-		std::vector<glm::vec3> lightColors{
-			{1.f, .1f, .1f},
-			{.1f, .1f, 1.f},
-			{.1f, 1.f, .1f},
-			{1.f, 1.f, .1f},
-			{.1f, 1.f, 1.f},
-			{1.f, 1.f, 1.f}  //
-		};
-
-		for (int i = 0; i < lightColors.size(); i++) {
-			auto pointLight = GameObject::createPointLightGameObject(0.2f);
-			pointLight.color = lightColors[i];
-			auto rotateLight = glm::rotate(
-				glm::mat4(1.f),
-				(i * glm::two_pi<float>()) / lightColors.size(),
-				{ 0.f, -1.f, 0.f });
-			pointLight.transform.position = glm::vec3(rotateLight * glm::vec4(-1.f, -1.f, -1.f, 1.f));
-			gameObjects.emplace(pointLight.getID(), std::move(pointLight));
-		}
+		//for (int i = 0; i < lightColors.size(); i++) {
+		//	auto pointLight = GameObject::createPointLightGameObject(0.2f);
+		//	pointLight.color = lightColors[i];
+		//	auto rotateLight = glm::rotate(
+		//		glm::mat4(1.f),
+		//		(i * glm::two_pi<float>()) / lightColors.size(),
+		//		{ 0.f, -1.f, 0.f });
+		//	pointLight.transform.position = glm::vec3(rotateLight * glm::vec4(-1.f, -1.f, -1.f, 1.f));
+		//	gameObjects.emplace(pointLight.getID(), std::move(pointLight));
+		//}
 		
 	}
 }
