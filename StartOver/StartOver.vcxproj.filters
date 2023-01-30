@@ -1,0 +1,48 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\Window\window.cpp" />
+    <ClCompile Include="src\Application\application.cpp" />
+    <ClCompile Include="src\Utils\FileManagement\file_manager.cpp" />
+    <ClCompile Include="src\Renderer\pipeline.cpp" />
+    <ClCompile Include="src\Renderer\device.cpp" />
+    <ClCompile Include="src\Renderer\swapchain.cpp" />
+    <ClCompile Include="src\Renderer\queuefamily.cpp" />
+    <ClCompile Include="src\Model\model.cpp" />
+    <ClCompile Include="src\GameObject\gameobject.cpp" />
+    <ClCompile Include="src\Renderer\renderer.cpp" />
+    <ClCompile Include="src\RenderSystem\render_system.cpp" />
+    <ClCompile Include="src\Components\camera.cpp" />
+    <ClCompile Include="src\Components\movement_controller.cpp" />
+    <ClCompile Include="src\Renderer\buffer.cpp" />
+    <ClCompile Include="src\Renderer\descriptors.cpp" />
+    <ClCompile Include="src\RenderSystem\pointlight_render_system.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\Window\window.hpp" />
+    <ClInclude Include="src\Application\application.hpp" />
+    <ClInclude Include="src\Renderer\pipeline.hpp" />
+    <ClInclude Include="src\Utils\FileManagement\file_manager.h" />
+    <ClInclude Include="src\Renderer\device.hpp" />
+    <ClInclude Include="src\Renderer\swapchain.hpp" />
+    <ClInclude Include="src\Renderer\queuefamily.hpp" />
+    <ClInclude Include="src\Model\model.hpp" />
+    <ClInclude Include="src\GameObject\gameobject.hpp" />
+    <ClInclude Include="src\Renderer\renderer.hpp" />
+    <ClInclude Include="src\RenderSystem\render_system.hpp" />
+    <ClInclude Include="src\Components\camera.hpp" />
+    <ClInclude Include="src\Components\movement_controller.hpp" />
+    <ClInclude Include="src\Utils\utils.hpp" />
+    <ClInclude Include="src\Renderer\buffer.hpp" />
+    <ClInclude Include="src\Renderer\frame_info.hpp" />
+    <ClInclude Include="src\Renderer\descriptors.hpp" />
+    <ClInclude Include="src\RenderSystem\pointlight_render_system.hpp" />
+    <ClInclude Include="src\Components\pointlight_component.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="shaders\simple.vert" />
+    <None Include="shaders\simple.frag" />
+    <None Include="shaders\compile.bat" />
+  </ItemGroup>
+</Project>
