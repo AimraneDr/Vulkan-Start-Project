@@ -20,8 +20,10 @@ namespace SO{
 
 		const glm::mat4 getProjectionMat()const { return projectionMat; }
 		const glm::mat4 getViewMat()const { return viewMat; }
+		const glm::mat4 getInverseViewMat()const { return inverseViewMat; }
 	private:
 		glm::mat4 projectionMat{ 1.0f };
 		glm::mat4 viewMat{ 1.0f };
+		glm::mat4 inverseViewMat{ 1.0f };
 	};
 }

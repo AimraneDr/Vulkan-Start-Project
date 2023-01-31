@@ -21,7 +21,7 @@ namespace SO {
 		PointLightRenderSystem(const PointLightRenderSystem&) = delete;
 		PointLightRenderSystem& operator=(const PointLightRenderSystem&) = delete;
 
-		//void update(FrameInfo& frameInfo, GlobalUBO ubo);
+		void update(FrameInfo& frameInfo, GlobalUBO& ubo);
 		void render(FrameInfo& frameInfo);
 	private:
 		RendererDevice& rDevice;

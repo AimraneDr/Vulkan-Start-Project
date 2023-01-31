@@ -3,14 +3,14 @@
 namespace SO {
 
 	//25th
-	//GameObject GameObject::createPointLightGameObject(float intensity, float radius, glm::vec3 color) {
-	//	GameObject gameObj = GameObject::createGameObject();
-	//	gameObj.color = color;
-	//	gameObj.transform.scale.x = radius;
-	//	gameObj.pointLight = std::make_unique<PointLightComponent>();
-	//	gameObj.pointLight->intensity = intensity;
-	//	return gameObj;
-	//}
+	GameObject GameObject::createPointLightGameObject(float intensity, float radius, glm::vec3 color) {
+		GameObject gameObj = GameObject::createGameObject();
+		gameObj.color = color;
+		gameObj.transform.scale.x = radius;
+		gameObj.pointLight = std::make_unique<PointLightComponent>();
+		gameObj.pointLight->intensity = intensity;
+		return gameObj;
+	}
 
 	// Matrix corrsponds to Translate * Ry * Rx * Rz * Scale
 		 // Rotations correspond to Tait-bryan angles of Y(1), X(2), Z(3)

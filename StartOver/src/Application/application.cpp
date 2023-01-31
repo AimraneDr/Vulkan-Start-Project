@@ -19,13 +19,6 @@
 namespace SO {
 	const float MAX_DELTA_TIME{ 0.01 };
 
-	struct GlobalUBO {
-		glm::mat4 projection{ 1.f };
-		glm::mat4 view{ 1.f };
-		glm::vec4 ambientLightColor{ 1.f, 1.f, 1.f, .02f };  // w is intensity
-		glm::vec3 lightPosition{ -1.f };
-		alignas(16) glm::vec4 lightColor{ 1.f };  // w is light intensity
-	};
 
 	App::App() {
 		globalPool = DescriptorPool::Builder(rDevice)
@@ -33,6 +26,14 @@ namespace SO {
 			.addPoolSize(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, SwapChain::MAX_FRAMES_IN_FLIGHT)
 			.build();
 		loadGameObjects();
+		//64
+		//std::cout << "size of mat4 :" << sizeof(glm::mat4) << "\n";
+		//16
+		//std::cout << "size of vec4 :" << sizeof(glm::vec4) << "\n";
+		//4
+		//std::cout << "size of float :" << sizeof(float) << "\n";
+		//4
+		//std::cout << "size of int :" << sizeof(int) << "\n";
 	}
 	App::~App() {
 
@@ -47,13 +48,13 @@ namespace SO {
 				sizeof(GlobalUBO),
 				1,
 				VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
-				VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT
+				VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT
 				);
 			uboBuffers[i]->map();
 		}
 
 		auto globalSetLayout = DescriptorSetLayout::Builder(rDevice)
-			.addBinding(0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_ALL_GRAPHICS)
+			.addBinding(0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT)
 			.build();
 
 		std::vector<VkDescriptorSet> globalDescriptorSets(SwapChain::MAX_FRAMES_IN_FLIGHT);
@@ -105,7 +106,8 @@ namespace SO {
 				GlobalUBO ubo{};
 				ubo.projection = camera.getProjectionMat();
 				ubo.view = camera.getViewMat();
-				//pointLightRenderSystem.update(frameInfo, ubo);
+				ubo.inverseView = camera.getInverseViewMat();
+				pointLightRenderSystem.update(frameInfo, ubo);
 				uboBuffers[frameIndex]->writeToBuffer(&ubo);
 				uboBuffers[frameIndex]->flush();
 
@@ -245,25 +247,26 @@ namespace SO {
 		gameObjects.emplace(cube3.getID(), std::move(cube3));
 
 		//25th
-		//std::vector<glm::vec3> lightColors{
-		//	{1.f, .1f, .1f},
-		//	{.1f, .1f, 1.f},
-		//	{.1f, 1.f, .1f},
-		//	{1.f, 1.f, .1f},
-		//	{.1f, 1.f, 1.f},
-		//	{1.f, 1.f, 1.f}  //
-		//};
+		std::vector<glm::vec3> lightColors{
+			{1.f, .1f, .1f},
+			{.1f, .1f, 1.f},
+			{.1f, 1.f, .1f},
+			{1.f, 1.f, .1f},
+			{.1f, 1.f, 1.f},
+			{1.f, 1.f, 1.f}  //
+		};
 
-		//for (int i = 0; i < lightColors.size(); i++) {
-		//	auto pointLight = GameObject::createPointLightGameObject(0.2f);
-		//	pointLight.color = lightColors[i];
-		//	auto rotateLight = glm::rotate(
-		//		glm::mat4(1.f),
-		//		(i * glm::two_pi<float>()) / lightColors.size(),
-		//		{ 0.f, -1.f, 0.f });
-		//	pointLight.transform.position = glm::vec3(rotateLight * glm::vec4(-1.f, -1.f, -1.f, 1.f));
-		//	gameObjects.emplace(pointLight.getID(), std::move(pointLight));
-		//}
+		for (int i = 0; i < lightColors.size(); i++) {
+			auto pointLight = GameObject::createPointLightGameObject(0.2f);
+			pointLight.color = lightColors[i];
+			pointLight.pointLight->intensity = 2;
+			auto rotateLight = glm::rotate(
+				glm::mat4(1.f),
+				(i * glm::two_pi<float>()) / lightColors.size(),
+				{ 0.f, -1.f, 0.f });
+			pointLight.transform.position = glm::vec3(rotateLight * glm::vec4(-3.f, -1.5f, -3.f, 1.f));
+			gameObjects.emplace(pointLight.getID(), std::move(pointLight));
+		}
 		
 	}
 }
