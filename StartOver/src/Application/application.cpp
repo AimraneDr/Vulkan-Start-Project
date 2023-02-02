@@ -16,9 +16,9 @@
 #include <array>
 #include <numeric>
 
+
 namespace SO {
 	const float MAX_DELTA_TIME{ 0.01 };
-
 
 	App::App() {
 		globalPool = DescriptorPool::Builder(rDevice)
@@ -26,14 +26,6 @@ namespace SO {
 			.addPoolSize(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, SwapChain::MAX_FRAMES_IN_FLIGHT)
 			.build();
 		loadGameObjects();
-		//64
-		//std::cout << "size of mat4 :" << sizeof(glm::mat4) << "\n";
-		//16
-		//std::cout << "size of vec4 :" << sizeof(glm::vec4) << "\n";
-		//4
-		//std::cout << "size of float :" << sizeof(float) << "\n";
-		//4
-		//std::cout << "size of int :" << sizeof(int) << "\n";
 	}
 	App::~App() {
 
@@ -222,11 +214,14 @@ namespace SO {
         cube.transform.position = { .5f, .0f, 0.f };
         cube.transform.scale = { .5f,.5f,.5f };
 
+
 		std::shared_ptr<GameModel> model1 = GameModel::loadModelFromFile(rDevice, "C:\\VStudio\\StartOver\\StartOver\\assets\\models\\smooth_vase.obj");
 		GameObject cube1 = GameObject::createGameObject();
 		cube1.model = model1;
 		cube1.transform.position = { -.5f, .5f, 0.f };
 		cube1.transform.scale = { 2.f,2.f,2.f };
+
+
 
 		std::shared_ptr<GameModel> model2 = GameModel::loadModelFromFile(rDevice, "C:\\VStudio\\StartOver\\StartOver\\assets\\models\\flat_vase.obj");
 		GameObject cube2 = GameObject::createGameObject();

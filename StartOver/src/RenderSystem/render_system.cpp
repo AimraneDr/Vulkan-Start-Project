@@ -8,6 +8,8 @@
 #include <stdexcept>
 #include <array>
 
+
+
 namespace SO {
 
 	struct PushConstData {
@@ -69,7 +71,6 @@ namespace SO {
 			PushConstData push{};
 			push.modelMatrix = object.transform.mat4();
 			push.normalMatrix = object.transform.normalMat();
-
 			vkCmdPushConstants(frameInfo.commandBuffer, pipelineLayout, VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(PushConstData), &push);
 			object.model->bind(frameInfo.commandBuffer);
 			object.model->draw(frameInfo.commandBuffer);

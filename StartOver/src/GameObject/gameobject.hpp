@@ -8,6 +8,7 @@
 #include <memory>
 #include <unordered_map>
 
+
 namespace SO {
 
 	struct TransformComponent {

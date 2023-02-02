@@ -10,6 +10,8 @@
 #include <memory>
 #include <vector>
 
+
+
 namespace SO {
 	class RenderSystem {
 	public:
