@@ -95,8 +95,8 @@ namespace SO {
 		config.dynamicStateInfo.pDynamicStates = config.dynamicStateEnables.data();
 		config.dynamicStateInfo.flags = 0;
 
-		config.bindingDescriptions = GameModel::Vertex::getBindingDescriptions();
-		config.attributeDescriptions = GameModel::Vertex::getAttributeDescriptions();
+		config.bindingDescriptions = Vertex::getBindingDescriptions();
+		config.attributeDescriptions = Vertex::getAttributeDescriptions();
 	}
 
 

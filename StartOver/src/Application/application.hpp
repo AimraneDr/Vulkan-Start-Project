@@ -1,5 +1,6 @@
 #pragma once
 
+#include "ECS/ecs_manager.hpp"
 #include "Renderer/device.hpp"
 #include "Window/window.hpp"
 #include "GameObject/gameobject.hpp"
@@ -7,7 +8,6 @@
 #include "Renderer/descriptors.hpp"
 
 #include <memory>
-#include <vector>
 
 namespace SO {
 	class App {
@@ -23,10 +23,12 @@ namespace SO {
 
 		void run();
 	private:
+		ECSManager manager{};
 		GameWindow gWindow{WIDTH, HEIGHT, "StartOver by 'Aimrane Draou'"};
-		RendererDevice rDevice{ gWindow };
-		GameRenderer gRenderer{ gWindow, rDevice };
-
+		//RendererDevice rDevice{ gWindow };
+		std::shared_ptr<RendererDevice> rDevice = std::make_shared<RendererDevice>(gWindow);
+		GameRenderer gRenderer{ gWindow, *rDevice};
+		GameModel modeller{ *rDevice };
 		std::unique_ptr<DescriptorPool> globalPool{};
 		GameObject::Map gameObjects;
 

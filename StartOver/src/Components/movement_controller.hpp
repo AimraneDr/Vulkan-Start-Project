@@ -22,6 +22,11 @@ namespace SO {
 		KeyMappings keys{};
 		float moveSpeed{3.f}, turnSpeed{1.5f};
 
-		void moveInPlaneXZ(GLFWwindow* window, float deltaTime, GameObject& gameObject);
+		MovementController(TransformComponent& target) : objTransfomr{ target } {};
+		~MovementController() = default;
+
+		void moveInPlaneXZ(GLFWwindow* window, float deltaTime);
+	private:
+		TransformComponent& objTransfomr;
 	};
 }

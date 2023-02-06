@@ -37,7 +37,7 @@ namespace SO {
 	private:
 		GameWindow& gWindow;
 		RendererDevice& rDevice;
-		std::unique_ptr <SwapChain> swapChain;//{ rDevice, gWindow .getExtent()};
+		std::unique_ptr <SwapChain> swapChain;
 		std::vector<VkCommandBuffer> commandBuffers;
 		uint32_t currentImageIndex;
 		int currentFrameIndex;

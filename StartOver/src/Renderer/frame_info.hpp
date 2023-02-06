@@ -3,6 +3,8 @@
 #include <vulkan/vulkan.h>
 #include "Components/camera.hpp"
 #include "GameObject/gameobject.hpp"
+#include "ECS/ecs_manager.hpp"
+
 
 namespace SO {
 #define MAX_POINT_LIGHTS 10
@@ -38,5 +40,6 @@ namespace SO {
 		Camera camera;
 		VkDescriptorSet globalDescriptorSet;
 		GameObject::Map& gameObjects;
+		ECSManager& manager;
 	};
 }

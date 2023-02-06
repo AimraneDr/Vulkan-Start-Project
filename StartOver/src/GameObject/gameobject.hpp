@@ -2,11 +2,14 @@
 
 #include "Model/model.hpp"
 #include "Components/pointlight_component.hpp"
+#include "ECS/types.hpp"
 
 #include <glm/gtc/matrix_transform.hpp>
 
 #include <memory>
 #include <unordered_map>
+
+
 
 
 namespace SO {
@@ -29,11 +32,10 @@ namespace SO {
 		using id_t = unsigned int;
 		using Map = std::unordered_map<id_t, GameObject>;
 
-		std::shared_ptr<GameModel> model{};
 		glm::vec3 color{};
 		//Components
-		TransformComponent transform{};
 		std::unique_ptr<PointLightComponent> pointLight = nullptr;
+		Entity eid{};
 
 		static GameObject createGameObject() {
 			static id_t current_id = 0;

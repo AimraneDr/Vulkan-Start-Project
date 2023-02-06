@@ -6,7 +6,7 @@ namespace SO {
 	GameObject GameObject::createPointLightGameObject(float intensity, float radius, glm::vec3 color) {
 		GameObject gameObj = GameObject::createGameObject();
 		gameObj.color = color;
-		gameObj.transform.scale.x = radius;
+		//gameObj.transform.scale.x = radius;
 		gameObj.pointLight = std::make_unique<PointLightComponent>();
 		gameObj.pointLight->intensity = intensity;
 		return gameObj;

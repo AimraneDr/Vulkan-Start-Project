@@ -14,8 +14,8 @@
 
 namespace std {
 	template<>
-	struct hash<SO::GameModel::Vertex> {
-		size_t operator()(SO::GameModel::Vertex const& vertex)const {
+	struct hash<SO::Vertex> {
+		size_t operator()(SO::Vertex const& vertex)const {
 			size_t seed = 0;
 			SO::hashCombine(seed, vertex.pos, vertex.color, vertex.normal, vertex.uv);
 			return seed;
@@ -25,29 +25,7 @@ namespace std {
 
 namespace SO {
 
-	GameModel::GameModel(RendererDevice& device, const std::vector<Vertex>& vertices, std::vector<uint32_t> indices)
-		:rDevice{device}
-	{
-		createVertexBuffers(vertices);
-		if (indices.size() > 0) {
-			hasIndexBuffer = true;
-			createIndexBuffers(indices);
-		}
-		else { hasIndexBuffer = false; }
-	}
-
-	GameModel::~GameModel() {}
-
-	std::unique_ptr<GameModel> GameModel::loadModelFromFile(RendererDevice& device, const std::string& filePath) {
-		std::vector<Vertex> _vertices{};
-		std::vector<uint32_t> _indices{};
-
-		loadModel(filePath, _vertices, _indices);
-
-		return std::make_unique<GameModel>(device, _vertices, _indices);
-	}
-
-	std::vector<VkVertexInputBindingDescription> GameModel::Vertex::getBindingDescriptions() {
+	std::vector<VkVertexInputBindingDescription> Vertex::getBindingDescriptions() {
 		std::vector<VkVertexInputBindingDescription> descriptions(1);
 		descriptions[0].binding = 0;
 		descriptions[0].stride = sizeof(Vertex);
@@ -55,7 +33,7 @@ namespace SO {
 		return descriptions;
 	}
 
-	std::vector<VkVertexInputAttributeDescription> GameModel::Vertex::getAttributeDescriptions() {
+	std::vector<VkVertexInputAttributeDescription> Vertex::getAttributeDescriptions() {
 		std::vector<VkVertexInputAttributeDescription> descriptions(4);
 		descriptions[0].binding = 0;
 		descriptions[0].location = 0;
@@ -80,79 +58,68 @@ namespace SO {
 		return descriptions;
 	}
 
-	void GameModel::bind(VkCommandBuffer commandBuffer) {
-		VkBuffer buffers[] = { vertexBuffer->getBuffer() };
-		VkDeviceSize offsets[] = { 0 };
-		vkCmdBindVertexBuffers(commandBuffer, 0, 1, buffers, offsets);
-		if (hasIndexBuffer) {
-			vkCmdBindIndexBuffer(commandBuffer, indexBuffer->getBuffer(), 0, VK_INDEX_TYPE_UINT32);
-		}
+	GameModel::GameModel(RendererDevice& device)
+		:rDevice{ device } 
+	{
+		
 	}
 
-	void GameModel::draw(VkCommandBuffer commandBuffer) {
-		if (hasIndexBuffer) {
-			vkCmdDrawIndexed(commandBuffer, indexCount, 1, 0, 0, 0);
-		}
-		else {
-			vkCmdDraw(commandBuffer, vertexCount, 1, 0, 0);
-		}
-	}
 
-	void GameModel::createVertexBuffers(const std::vector<Vertex>& vertices) {
-		vertexCount = static_cast<uint32_t>(vertices.size());
-		assert(vertexCount >= 3 && "Vertex Count must be greater or equale to 3!");
-		VkDeviceSize bufferSize = sizeof(vertices[0]) * vertexCount;
+	void GameModel::createVertexBuffers(const std::vector<Vertex>& vertices, Model& out) {
+		out.vertexCount = static_cast<uint32_t>(vertices.size());
+		assert(out.vertexCount >= 3 && "Vertex Count must be greater or equale to 3!");
+		VkDeviceSize bufferSize = sizeof(vertices[0]) * out.vertexCount;
 		uint32_t vertexSize = sizeof(vertices[0]);
 
-		RendererBuffer stagingBuffer{ 
-			rDevice, 
-			vertexSize, 
-			vertexCount,
+		RendererBuffer stagingBuffer{
+			rDevice,
+			vertexSize,
+			out.vertexCount,
 			VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
 			VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT
 		};
 		stagingBuffer.map();
 		stagingBuffer.writeToBuffer((void*)vertices.data());
 
-		vertexBuffer = std::make_unique<RendererBuffer>(
+		out.vertexBuffer = std::make_shared<SO::RendererBuffer>(
 			rDevice,
 			vertexSize,
-			vertexCount,
+			out.vertexCount,
 			VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
 			VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT
-			);
+		);
 
-		rDevice.copyBuffer(stagingBuffer.getBuffer(), vertexBuffer->getBuffer(), bufferSize);
+		rDevice.copyBuffer(stagingBuffer.getBuffer(), out.vertexBuffer->getBuffer(), bufferSize);
 	}
 	
-	void GameModel::createIndexBuffers(const std::vector<uint32_t>& indices) {
-		indexCount = static_cast<uint32_t>(indices.size());
-		assert(indexCount >= 3 && "Index Count must be greater or equale to 3!");
-		VkDeviceSize bufferSize = sizeof(indices[0]) * indexCount;
+	void GameModel::createIndexBuffers(const std::vector<uint32_t>& indices, Model& out) {
+		out.indexCount = static_cast<uint32_t>(indices.size());
+		assert(out.indexCount >= 3 && "Index Count must be greater or equale to 3!");
+		VkDeviceSize bufferSize = sizeof(indices[0]) * out.indexCount;
 		uint32_t indexSize = sizeof(indices[0]);
 
 		RendererBuffer stagingBuffer{
 			rDevice,
 			indexSize,
-			indexCount,
+			out.indexCount,
 			VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
 			VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT
 		};
 		stagingBuffer.map();
 		stagingBuffer.writeToBuffer((void*)indices.data());
 
-		indexBuffer = std::make_unique<RendererBuffer>(
+		out.indexBuffer = std::make_shared<SO::RendererBuffer>(
 			rDevice,
 			indexSize,
-			indexCount,
+			out.indexCount,
 			VK_BUFFER_USAGE_INDEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
 			VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT
 			);
-		rDevice.copyBuffer(stagingBuffer.getBuffer(), indexBuffer->getBuffer(), bufferSize);
+		rDevice.copyBuffer(stagingBuffer.getBuffer(), out.indexBuffer->getBuffer(), bufferSize);
 	}
 
 
-	void GameModel::loadModel(const std::string& path, std::vector<Vertex>& vertices, std::vector<uint32_t>& indices) {
+	void GameModel::loadModel(const std::string& path, Model& m) {
 		tinyobj::attrib_t attrib;
 		std::vector<tinyobj::shape_t> shapes;
 		std::vector<tinyobj::material_t> materials;
@@ -161,9 +128,8 @@ namespace SO {
 		if (!tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &err, path.c_str())) {
 			throw std::runtime_error("Failed to Load Object : " + path + "\n\twarn : " + warn + "\n\terr : " + err);
 		}
-
-		vertices.clear();
-		indices.clear();
+		std::vector<Vertex> vertices{};
+		std::vector<uint32_t> indices{};
 
 		std::unordered_map<Vertex, uint32_t> uniqueVertices{};
 		for (const auto& shape : shapes) {
@@ -205,6 +171,18 @@ namespace SO {
 				indices.push_back(uniqueVertices[vertex]);
 			}
 		}
+		m.vertexCount = vertices.size();
+		createVertexBuffers(vertices, m);
+		m.indexCount = indices.size();
+		if (m.indexCount > 0) {
+			m.hasIndexBuffer = true;
+			createIndexBuffers(indices, m);
+		}else{ m.hasIndexBuffer = false; }
 	}
 
+	Model GameModel::loadModel(const std::string& path) {
+		std::shared_ptr<Model> m = std::make_shared<Model>();
+		loadModel(path, *m);
+		return *m.get();
+	}
 }

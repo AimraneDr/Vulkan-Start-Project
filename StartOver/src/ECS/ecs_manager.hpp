@@ -1,14 +1,17 @@
-#include "defines.h"
-#include "components_manager.h"
-#include "entity_manager.h"
-#include "system_manager.h"
+#pragma once
+
+#include "component_manager.hpp"
+#include "entity_manager.hpp"
+#include "system_manager.hpp"
+#include "types.hpp"
+#include <memory>
+
 
 class ECSManager
 {
 public:
 	void Init()
 	{
-		// Create pointers to each manager
 		mComponentManager = std::make_unique<ComponentManager>();
 		mEntityManager = std::make_unique<EntityManager>();
 		mSystemManager = std::make_unique<SystemManager>();
@@ -16,14 +19,14 @@ public:
 
 
 	// Entity methods
-	EntityID CreateEntity()
+	Entity CreateEntity()
 	{
-		return mEntityManager->createEntity();
+		return mEntityManager->CreateEntity();
 	}
 
-	void DestroyEntity(EntityID& entity)
+	void DestroyEntity(Entity entity)
 	{
-		mEntityManager->destroyEntity(entity);
+		mEntityManager->DestroyEntity(entity);
 
 		mComponentManager->EntityDestroyed(entity);
 
@@ -39,33 +42,31 @@ public:
 	}
 
 	template<typename T>
-	void AddComponent(EntityID entity, T component)
+	void AddComponent(Entity entity, T component)
 	{
 		mComponentManager->AddComponent<T>(entity, component);
 
-		auto signature = mEntityManager->getComponentsMask(entity);
-		signature |= mComponentManager->GetComponentType<T>();
-		mEntityManager->setComponentsMask(entity, signature);
+		auto signature = mEntityManager->GetSignature(entity);
+		signature.set(mComponentManager->GetComponentType<T>(), true);
+		mEntityManager->SetSignature(entity, signature);
 
 		mSystemManager->EntitySignatureChanged(entity, signature);
 	}
 
 	template<typename T>
-	void RemoveComponent(EntityID entity)
+	void RemoveComponent(Entity entity)
 	{
-		ComponentType type = mComponentManager->GetComponentType<T>();
-		if (!mEntityManager->entityHasComponent(entity, type)) return;
 		mComponentManager->RemoveComponent<T>(entity);
 
-		auto signature = mEntityManager->getComponentsMask(entity);
-		signature ^= type;
-		mEntityManager->setComponentsMask(entity, signature);
+		auto signature = mEntityManager->GetSignature(entity);
+		signature.set(mComponentManager->GetComponentType<T>(), false);
+		mEntityManager->SetSignature(entity, signature);
 
 		mSystemManager->EntitySignatureChanged(entity, signature);
 	}
 
 	template<typename T>
-	T& GetComponent(EntityID entity)
+	T& GetComponent(Entity entity)
 	{
 		return mComponentManager->GetComponent<T>(entity);
 	}
@@ -85,7 +86,7 @@ public:
 	}
 
 	template<typename T>
-	void SetSystemSignature(Mask64 signature)
+	void SetSystemSignature(Signature signature)
 	{
 		mSystemManager->SetSignature<T>(signature);
 	}

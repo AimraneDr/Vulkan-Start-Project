@@ -12,10 +12,16 @@
 #include <memory>
 
 namespace SO {
-	class GameModel {
-	public:
+	struct Model {
+		std::shared_ptr<RendererBuffer> vertexBuffer;
+		uint32_t vertexCount;
 
-		struct Vertex {
+		bool hasIndexBuffer;
+		std::shared_ptr<RendererBuffer> indexBuffer;
+		uint32_t indexCount;
+	};
+	
+	struct Vertex {
 			glm::vec3 pos{};
 			glm::vec3 color{};
 			glm::vec3 normal{};
@@ -29,30 +35,22 @@ namespace SO {
 			}
 		};
 
+	class GameModel {
+	public:
+		GameModel(RendererDevice& device);
+		~GameModel() {};
 
-
-		GameModel(RendererDevice& device, const std::vector<Vertex>& vertices, std::vector<uint32_t> indices = {});
-		~GameModel();
-
+		//copy
 		GameModel(const GameModel&) = delete;
 		GameModel &operator=(const GameModel &) = delete;
 
-		static std::unique_ptr<GameModel> loadModelFromFile(RendererDevice& device, const std::string& filePath);
+		void loadModel(const std::string& path, Model& m);
+		Model loadModel(const std::string& path);
 
-		void bind(VkCommandBuffer commandBuffer);
-		void draw(VkCommandBuffer commandBuffer);
 	private:
 		RendererDevice& rDevice;
 
-		std::unique_ptr<RendererBuffer> vertexBuffer;
-		uint32_t vertexCount;
-		
-		bool hasIndexBuffer;
-		std::unique_ptr<RendererBuffer> indexBuffer;
-		uint32_t indexCount;
-		
-		static void loadModel(const std::string& path, std::vector<Vertex>& vertices, std::vector<uint32_t>& indices);
-		void createVertexBuffers(const std::vector<Vertex>& vertices);
-		void createIndexBuffers(const std::vector<uint32_t> &indices);
+		void createVertexBuffers(const std::vector<Vertex>& vertices, Model& out);
+		void createIndexBuffers(const std::vector<uint32_t> &indices, Model& out);
 	};
 }

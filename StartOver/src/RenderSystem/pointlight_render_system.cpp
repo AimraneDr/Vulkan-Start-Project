@@ -69,13 +69,14 @@ namespace SO {
 		int lightindex = 0;
 		for (auto& kv : frameInfo.gameObjects) {
 			auto& obj = kv.second;
+			auto& objT = frameInfo.manager.GetComponent<TransformComponent>(obj.eid);
 			if (obj.pointLight == nullptr) continue;
 
 			// update light position
-			obj.transform.position = glm::vec3(rotateLight * glm::vec4(obj.transform.position, 1.f));
+			objT.position = glm::vec3(rotateLight * glm::vec4(objT.position, 1.f));
 
 			//paas pointlight to ubo
-			ubo.pointlights[lightindex].position = glm::vec4{ obj.transform.position, 1.0f };
+			ubo.pointlights[lightindex].position = glm::vec4{ objT.position, 1.0f };
 			ubo.pointlights[lightindex].color = glm::vec4{ obj.color, obj.pointLight->intensity};
 			lightindex += 1;
 		}
@@ -90,11 +91,12 @@ namespace SO {
 		//25th
 		for (auto& kv : frameInfo.gameObjects) {
 			auto& obj = kv.second;
+			auto& objT = frameInfo.manager.GetComponent<TransformComponent>(obj.eid);
 			if (obj.pointLight == nullptr) continue;
 			PointLightPushConstant push{};
-			push.position = glm::vec4{ obj.transform.position, 1.0f };
+			push.position = glm::vec4{ objT.position, 1.0f };
 			push.color = glm::vec4{ obj.color, obj.pointLight->intensity };
-			push.radius = obj.transform.scale.x;
+			push.radius = objT.scale.x;
 			vkCmdPushConstants(
 				frameInfo.commandBuffer, 
 				pipelineLayout, 

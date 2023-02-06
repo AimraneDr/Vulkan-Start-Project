@@ -12,7 +12,9 @@ namespace SO {
             uint32_t instanceCount,
             VkBufferUsageFlags usageFlags,
             VkMemoryPropertyFlags memoryPropertyFlags,
-            VkDeviceSize minOffsetAlignment = 1);
+            VkDeviceSize minOffsetAlignment = 1
+            );
+
         ~RendererBuffer();
 
         RendererBuffer(const RendererBuffer&) = delete;

@@ -146,6 +146,7 @@
     <ClCompile Include="src\Application\application.cpp" />
     <ClCompile Include="src\Components\camera.cpp" />
     <ClCompile Include="src\Components\movement_controller.cpp" />
+    <ClCompile Include="src\Systems\Physics\physics.cpp" />
     <ClCompile Include="src\GameObject\gameobject.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Model\model.cpp" />
@@ -157,7 +158,7 @@
     <ClCompile Include="src\Renderer\swapchain.cpp" />
     <ClCompile Include="src\Renderer\pipeline.cpp" />
     <ClCompile Include="src\RenderSystem\pointlight_render_system.cpp" />
-    <ClCompile Include="src\RenderSystem\render_system.cpp" />
+    <ClCompile Include="src\Systems\Renderable\renderable_system.cpp" />
     <ClCompile Include="src\Utils\FileManagement\file_manager.cpp" />
     <ClCompile Include="src\Window\window.cpp" />
   </ItemGroup>
@@ -166,6 +167,14 @@
     <ClInclude Include="src\Components\camera.hpp" />
     <ClInclude Include="src\Components\movement_controller.hpp" />
     <ClInclude Include="src\Components\pointlight_component.hpp" />
+    <ClInclude Include="src\Systems\Physics\physics.hpp" />
+    <ClInclude Include="src\ECS\component_array.hpp" />
+    <ClInclude Include="src\ECS\component_manager.hpp" />
+    <ClInclude Include="src\ECS\ecs_manager.hpp" />
+    <ClInclude Include="src\ECS\entity_manager.hpp" />
+    <ClInclude Include="src\ECS\system.hpp" />
+    <ClInclude Include="src\ECS\system_manager.hpp" />
+    <ClInclude Include="src\ECS\types.hpp" />
     <ClInclude Include="src\GameObject\gameobject.hpp" />
     <ClInclude Include="src\Model\model.hpp" />
     <ClInclude Include="src\Renderer\buffer.hpp" />
@@ -177,7 +186,8 @@
     <ClInclude Include="src\Renderer\frame_info.hpp" />
     <ClInclude Include="src\Renderer\pipeline.hpp" />
     <ClInclude Include="src\RenderSystem\pointlight_render_system.hpp" />
-    <ClInclude Include="src\RenderSystem\render_system.hpp" />
+    <ClInclude Include="src\Components\mesh_renderer.hpp" />
+    <ClInclude Include="src\Systems\Renderable\renderable_system.hpp" />
     <ClInclude Include="src\Utils\FileManagement\file_manager.h" />
     <ClInclude Include="src\Utils\utils.hpp" />
     <ClInclude Include="src\Window\window.hpp" />
