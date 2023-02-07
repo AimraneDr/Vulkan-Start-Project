@@ -4,14 +4,17 @@
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
 #include <glm/glm.hpp>
 
-namespace SO{
-	class Camera {
-	public:
-		Camera();
-		~Camera();
+namespace Components {
 
-		void setOrthographicProjection(float left, float right, float top, float bottom, float near, float far);
-		void setPerspectiveProjection(float fovy, float aspect, float near, float far);
+	class CameraComponent {
+	public:
+		float nearPlane{ 0.1 };
+		float farPlane{ 100 };
+		bool orthographic{ false };
+		float aspect{ 1.0f };
+
+		void setOrthographicProjection(float left, float right, float top, float bottom);
+		void setPerspectiveProjection(float fovy);
 
 		void setViewDirection(glm::vec3 position, glm::vec3 direction, glm::vec3 up = glm::vec3{ .0f,-1.0f,.0f });
 		void setViewTarget(glm::vec3 position, glm::vec3 target, glm::vec3 up = glm::vec3{ .0f,-1.0f,.0f });

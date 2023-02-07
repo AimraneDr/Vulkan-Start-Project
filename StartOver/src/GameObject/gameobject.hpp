@@ -1,12 +1,12 @@
 #pragma once
 
 #include "Model/model.hpp"
-#include "Components/pointlight_component.hpp"
 #include "ECS/types.hpp"
 
 #include <glm/gtc/matrix_transform.hpp>
 
 #include <memory>
+#include <Components/pointlight_component.hpp>
 #include <unordered_map>
 
 
@@ -32,16 +32,12 @@ namespace SO {
 		using id_t = unsigned int;
 		using Map = std::unordered_map<id_t, GameObject>;
 
-		glm::vec3 color{};
-		//Components
-		std::unique_ptr<PointLightComponent> pointLight = nullptr;
 		Entity eid{};
 
 		static GameObject createGameObject() {
 			static id_t current_id = 0;
 			return GameObject{ current_id++ };
 		}
-		static GameObject createPointLightGameObject(float intensity = 100.f, float radius = 0.1f, glm::vec3 color = glm::vec3(1.f));
 
 		//Copy
 		GameObject(const GameObject&) = delete;

@@ -7,10 +7,12 @@
 #include <memory>
 
 
-class RenderablesSystem : public System {
+class PointLightRenderSystem : public System {
 public:
 	void init(std::shared_ptr<SO::RendererDevice>& device, VkRenderPass renderPass, VkDescriptorSetLayout descriptorSetLayout);
 	void shutDown();
+
+	void update(SO::FrameInfo& frameInfo, SO::GlobalUBO& ubo);
 	void render(SO::FrameInfo& frameInfo);
 private:
 	std::shared_ptr<SO::RendererDevice> rDevice;

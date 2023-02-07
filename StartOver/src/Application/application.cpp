@@ -1,11 +1,11 @@
 #include "application.hpp"
 
-#include "RenderSystem/pointlight_render_system.hpp"
 #include "Components/camera.hpp"
 #include "Components/mesh_renderer.hpp"
-#include "Components/movement_controller.hpp"
 #include "Systems/Physics/physics.hpp"
 #include "Systems/Renderable/renderable_system.hpp"
+#include "Systems/Renderable/light_source_render_system.hpp"
+#include "Systems/Camera/camera_system.hpp"
 
 #define GLM_FORCE_RADIANS
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
@@ -23,28 +23,45 @@
 
 namespace SO {
 	const float MAX_DELTA_TIME{ 0.01 };
-	std::shared_ptr<PhysicsSystem> ph_S;
-	std::shared_ptr<RenderablesSystem> ro_S;
-
-
+	std::shared_ptr<CameraSystem> cameraS;
+	std::shared_ptr<PhysicsSystem> physicsS;
+	std::shared_ptr<RenderablesSystem> renderablesS;
+	std::shared_ptr<PointLightRenderSystem> pointLightRenderS;
 
 	App::App() {
 		manager.Init();
+		manager.RegisterComponent<Components::CameraComponent>();
 		manager.RegisterComponent<TransformComponent>();
 		manager.RegisterComponent<MovementComponent>();
 		manager.RegisterComponent<Components::MeshRenderer>();
-		ph_S = manager.RegisterSystem<PhysicsSystem>();
+		manager.RegisterComponent<Components::PointLightComponent>();
+
+		cameraS = manager.RegisterSystem<CameraSystem>();
+		{
+			Signature signature, ro_signature;
+			signature.set(manager.GetComponentType<Components::CameraComponent>());
+			signature.set(manager.GetComponentType<TransformComponent>());
+			manager.SetSystemSignature<CameraSystem>(signature);
+		}
+		physicsS = manager.RegisterSystem<PhysicsSystem>();
 		{
 			Signature signature, ro_signature;
 			signature.set(manager.GetComponentType<TransformComponent>());
 			signature.set(manager.GetComponentType<MovementComponent>());
 			manager.SetSystemSignature<PhysicsSystem>(signature);
 		}
-		ro_S = manager.RegisterSystem<RenderablesSystem>();
+		renderablesS = manager.RegisterSystem<RenderablesSystem>();
 		{
-			Signature ro_signature;
-			ro_signature.set(manager.GetComponentType<Components::MeshRenderer>());
-			manager.SetSystemSignature<RenderablesSystem>(ro_signature);
+			Signature signature;
+			signature.set(manager.GetComponentType<Components::MeshRenderer>());
+			manager.SetSystemSignature<RenderablesSystem>(signature);
+		}
+		pointLightRenderS = manager.RegisterSystem<PointLightRenderSystem>();
+		{
+			Signature signature;
+			signature.set(manager.GetComponentType<TransformComponent>());
+			signature.set(manager.GetComponentType<Components::PointLightComponent>());
+			manager.SetSystemSignature<PointLightRenderSystem>(signature);
 		}
 
 
@@ -82,21 +99,23 @@ namespace SO {
 				.writeBuffer(0, &bufferInfo)
 				.build(globalDescriptorSets[i]);
 		}
-		ro_S->init(rDevice, gRenderer.getSwapChainRenderPass(), globalSetLayout->getDescriptorSetLayout());
+		renderablesS->init(rDevice, gRenderer.getSwapChainRenderPass(), globalSetLayout->getDescriptorSetLayout());
+		pointLightRenderS->init(rDevice, gRenderer.getSwapChainRenderPass(), globalSetLayout->getDescriptorSetLayout());
 
-		PointLightRenderSystem pointLightRenderSystem{*rDevice.get(), gRenderer.getSwapChainRenderPass(), globalSetLayout->getDescriptorSetLayout()};
-		Camera camera{};
-		camera.setViewDirection(glm::vec3{ 0.f }, glm::vec3{ .0f, 0.f,1.f });
 		
-		GameObject camObj = GameObject::createGameObject();
-		camObj.eid = manager.CreateEntity();
-		manager.AddComponent(camObj.eid, TransformComponent{
+		Entity camEID = manager.CreateEntity();
+		manager.AddComponent(camEID, TransformComponent{
 			{.0f,.0f,-4.f},
 			{1.f,1.f,1.f},
 			{.0f,.0f,.0f}
 			});
-		TransformComponent camTransfomr = manager.GetComponent<TransformComponent>(camObj.eid);
-		MovementController controller{ camTransfomr };
+		manager.AddComponent(camEID, Components::CameraComponent{});
+
+		Components::CameraComponent& camera = manager.GetComponent<Components::CameraComponent>(camEID);
+		camera.setViewDirection(glm::vec3{ 0.f }, glm::vec3{ .0f, 0.f,1.f });
+		camera.aspect = gRenderer.getAspectRatio();
+
+		TransformComponent camTransfomr = manager.GetComponent<TransformComponent>(camEID);
 
 		auto currentTime = std::chrono::high_resolution_clock::now();
 
@@ -110,11 +129,8 @@ namespace SO {
 
 			frameTime = glm::min(frameTime, MAX_DELTA_TIME);
 
-			controller.moveInPlaneXZ(gWindow.getGLFWwindow(), frameTime);
-			camera.setViewYXZ(camTransfomr.position, camTransfomr.rotation);
+			cameraS->update(frameTime, manager,gWindow.getGLFWwindow());
 
-			float aspect = gRenderer.getAspectRatio();
-			camera.setPerspectiveProjection(glm::radians(50.0f), aspect, .1f, 100.f);
 
 			if (VkCommandBuffer commandBuffer = gRenderer.beginFrame()) {
 				int frameIndex = gRenderer.getFrameIndex();
@@ -124,7 +140,6 @@ namespace SO {
 					commandBuffer,
 					camera,
 					globalDescriptorSets[frameIndex],
-					gameObjects,
 					manager
 				};
 				//update
@@ -132,16 +147,17 @@ namespace SO {
 				ubo.projection = camera.getProjectionMat();
 				ubo.view = camera.getViewMat();
 				ubo.inverseView = camera.getInverseViewMat();
-				//manager.UpdateSystems(frameInfo.frameTime);
-				ph_S->Update(frameTime, manager);
-				pointLightRenderSystem.update(frameInfo, ubo);
+				//Update Systems
+				physicsS->Update(frameTime, manager);
+				pointLightRenderS->update(frameInfo, ubo);
+
 				uboBuffers[frameIndex]->writeToBuffer(&ubo);
 				uboBuffers[frameIndex]->flush();
 
 				//render
 				gRenderer.beginSwapChainRenderPass(commandBuffer);
-				ro_S->render(frameInfo);
-				pointLightRenderSystem.render(frameInfo);
+				renderablesS->render(frameInfo);
+				pointLightRenderS->render(frameInfo);
 				gRenderer.endSwapChainRenderPass(commandBuffer);
 				gRenderer.endFrame();
 			}
@@ -149,7 +165,8 @@ namespace SO {
 
 
 		vkDeviceWaitIdle(rDevice->device());
-		ro_S->shutDown();
+		renderablesS->shutDown();
+		pointLightRenderS->shutDown();
 	}
 
     // temporary helper function, creates a 1x1x1 cube centered at offset
@@ -263,7 +280,7 @@ namespace SO {
 		manager.AddComponent(
 			e,
 			MovementComponent{
-				glm::vec3{.0f, 1.f, .0f},
+				glm::vec3{.0f, -2.f, .0f},
 			}
 		);
 
@@ -323,13 +340,6 @@ namespace SO {
 			}
 		);
 
-		
-		gameObjects.emplace(cube.getID(), std::move(cube));
-		gameObjects.emplace(cube1.getID(), std::move(cube1));
-		gameObjects.emplace(cube2.getID(), std::move(cube2));
-		gameObjects.emplace(cube3.getID(), std::move(cube3));
-
-		//25th
 		std::vector<glm::vec3> lightColors{
 			{1.f, .1f, .1f},
 			{.1f, .1f, 1.f},
@@ -338,27 +348,32 @@ namespace SO {
 			{.1f, 1.f, 1.f},
 			{1.f, 1.f, 1.f}  //
 		};
-
+		float a = 0;
 		for (int i = 0; i < lightColors.size(); i++) {
+			a = i + 1;
 			e = manager.CreateEntity();
-			auto pointLight = GameObject::createPointLightGameObject(0.2f);
-			pointLight.color = lightColors[i];
-			pointLight.pointLight->intensity = 2;
 			auto rotateLight = glm::rotate(
 				glm::mat4(1.f),
 				(i * glm::two_pi<float>()) / lightColors.size(),
 				{ 0.f, -1.f, 0.f });
-			pointLight.eid = e;
 			manager.AddComponent(
 				e,
 				TransformComponent{
 					glm::vec3(rotateLight * glm::vec4(-3.f, -1.5f, -3.f, 1.f)),
-					glm::vec3{.25f, 1.f, 1.f},
+					glm::vec3{1.f, 1.f, 1.f},
 					glm::vec3{.0f, .0f, .0f}
 				}
 			);
-			gameObjects.emplace(pointLight.getID(), std::move(pointLight));
+			manager.AddComponent(
+				e,
+				Components::PointLightComponent{
+					lightColors[i],
+					.25f,
+					a
+				}
+			);
 		}
-		
+
+
 	}
 }

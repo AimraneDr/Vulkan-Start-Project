@@ -30,7 +30,7 @@ namespace SO {
 		GameRenderer gRenderer{ gWindow, *rDevice};
 		GameModel modeller{ *rDevice };
 		std::unique_ptr<DescriptorPool> globalPool{};
-		GameObject::Map gameObjects;
+
 
 		void loadGameObjects();
 	};

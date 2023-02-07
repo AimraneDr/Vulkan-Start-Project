@@ -3,38 +3,30 @@
 #include <cassert>
 #include <limits>
 
-namespace SO {
+namespace Components {
 
-	Camera::Camera() {
-
-	}
-
-	Camera::~Camera() {
-
-	}
-
-	void Camera::setOrthographicProjection(float left, float right, float top, float bottom, float near, float far) {
+	void CameraComponent::setOrthographicProjection(float left, float right, float top, float bottom) {
 		projectionMat = glm::mat4{ 1.0f };
 		projectionMat[0][0] = 2.f / (right - left);
 		projectionMat[1][1] = 2.f / (bottom - top);
-		projectionMat[2][2] = 1.f / (far - near);
+		projectionMat[2][2] = 1.f / (farPlane - nearPlane);
 		projectionMat[3][0] = -(right + left) / (right - left);
 		projectionMat[3][1] = -(bottom + top) / (bottom - top);
-		projectionMat[3][2] = -near / (far - near);
+		projectionMat[3][2] = -nearPlane / (farPlane - nearPlane);
 	}
 
-	void Camera::setPerspectiveProjection(float fovy, float aspect, float near, float far) {
+	void CameraComponent::setPerspectiveProjection(float fovy) {
 		assert(glm::abs(aspect - std::numeric_limits<float>::epsilon()) > 0.0f);
 		const float tanHalfFovy = tan(fovy / 2.f);
 		projectionMat = glm::mat4{ 0.0f };
 		projectionMat[0][0] = 1.f / (aspect * tanHalfFovy);
 		projectionMat[1][1] = 1.f / (tanHalfFovy);
-		projectionMat[2][2] = far / (far - near);
+		projectionMat[2][2] = farPlane / (farPlane - nearPlane);
 		projectionMat[2][3] = 1.f;
-		projectionMat[3][2] = -(far * near) / (far - near);
+		projectionMat[3][2] = -(farPlane * nearPlane) / (farPlane - nearPlane);
 	}
 
-	void Camera::setViewDirection(glm::vec3 position, glm::vec3 direction, glm::vec3 up) {
+	void CameraComponent::setViewDirection(glm::vec3 position, glm::vec3 direction, glm::vec3 up) {
 		const glm::vec3 w{ glm::normalize(direction) };
 		const glm::vec3 u{ glm::normalize(glm::cross(w, up)) };
 		const glm::vec3 v{ glm::cross(w, u) };
@@ -68,11 +60,11 @@ namespace SO {
 		inverseViewMat[3][2] = position.z;
 	}
 
-	void Camera::setViewTarget(glm::vec3 position, glm::vec3 target, glm::vec3 up) {
+	void CameraComponent::setViewTarget(glm::vec3 position, glm::vec3 target, glm::vec3 up) {
 		setViewDirection(position, target - position, up);
 	}
 
-	void Camera::setViewYXZ(glm::vec3 position, glm::vec3 rotation) {
+	void CameraComponent::setViewYXZ(glm::vec3 position, glm::vec3 rotation) {
 		const float c3 = glm::cos(rotation.z);
 		const float s3 = glm::sin(rotation.z);
 		const float c2 = glm::cos(rotation.x);

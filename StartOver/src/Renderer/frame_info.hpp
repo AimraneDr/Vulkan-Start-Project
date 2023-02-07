@@ -37,9 +37,8 @@ namespace SO {
 		int frameIndex;
 		float frameTime;
 		VkCommandBuffer commandBuffer;
-		Camera camera;
+		Components::CameraComponent& camera;
 		VkDescriptorSet globalDescriptorSet;
-		GameObject::Map& gameObjects;
 		ECSManager& manager;
 	};
 }

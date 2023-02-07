@@ -82,7 +82,7 @@ void draw(VkCommandBuffer commandBuffer, SO::Model& m) {
 }
 
 
-void RenderablesSystem::render(SO::FrameInfo frameInfo) {
+void RenderablesSystem::render(SO::FrameInfo& frameInfo) {
 	gPipeline->bind(frameInfo.commandBuffer);
 
 	vkCmdBindDescriptorSets(frameInfo.commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 0, 1, &frameInfo.globalDescriptorSet, 0, nullptr);
