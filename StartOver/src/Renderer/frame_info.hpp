@@ -39,6 +39,5 @@ namespace SO {
 		VkCommandBuffer commandBuffer;
 		Components::CameraComponent& camera;
 		VkDescriptorSet globalDescriptorSet;
-		ECSManager& manager;
 	};
 }

@@ -19,6 +19,7 @@
     <ClCompile Include="src\Systems\Renderable\renderable_system.cpp" />
     <ClCompile Include="src\Systems\Renderable\light_source_render_system.cpp" />
     <ClCompile Include="src\Systems\Camera\camera_system.cpp" />
+    <ClCompile Include="src\Components\transform.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Window\window.hpp" />
@@ -49,6 +50,8 @@
     <ClInclude Include="src\Systems\Renderable\renderable_system.hpp" />
     <ClInclude Include="src\Systems\Renderable\light_source_render_system.hpp" />
     <ClInclude Include="src\Systems\Camera\camera_system.hpp" />
+    <ClInclude Include="src\Components\components.h" />
+    <ClInclude Include="src\Components\transform.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\simple.vert" />

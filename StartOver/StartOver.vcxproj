@@ -78,6 +78,7 @@
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>C:\libs\glm;C:\libs\glfw-3.3.8.bin.WIN64\include;C:\VulkanSDK\1.3.231.1\Include;C:\libs\stb;C:\libs\TinyObjLoader;$(ProjectDir)src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <ShowIncludes>true</ShowIncludes>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -96,6 +97,7 @@
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>C:\libs\glm;C:\libs\glfw-3.3.8.bin.WIN64\include;C:\VulkanSDK\1.3.231.1\Include;C:\libs\stb;C:\libs\TinyObjLoader;$(ProjectDir)src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <ShowIncludes>true</ShowIncludes>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -114,6 +116,7 @@
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>C:\libs\glm;C:\libs\glfw-3.3.8.bin.WIN64\include;C:\VulkanSDK\1.3.231.1\Include;C:\libs\stb;C:\libs\TinyObjLoader;$(ProjectDir)src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <ShowIncludes>true</ShowIncludes>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -132,6 +135,7 @@
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>C:\libs\glm;C:\libs\glfw-3.3.8.bin.WIN64\include;C:\VulkanSDK\1.3.231.1\Include;C:\libs\stb;C:\libs\TinyObjLoader;$(ProjectDir)src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <ShowIncludes>true</ShowIncludes>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -145,6 +149,7 @@
   <ItemGroup>
     <ClCompile Include="src\Application\application.cpp" />
     <ClCompile Include="src\Components\camera.cpp" />
+    <ClCompile Include="src\Components\transform.cpp" />
     <ClCompile Include="src\Systems\Camera\camera_system.cpp" />
     <ClCompile Include="src\Systems\Physics\physics.cpp" />
     <ClCompile Include="src\GameObject\gameobject.cpp" />
@@ -165,7 +170,9 @@
   <ItemGroup>
     <ClInclude Include="src\Application\application.hpp" />
     <ClInclude Include="src\Components\camera.hpp" />
+    <ClInclude Include="src\Components\components.h" />
     <ClInclude Include="src\Components\pointlight_component.hpp" />
+    <ClInclude Include="src\Components\transform.hpp" />
     <ClInclude Include="src\Systems\Camera\camera_system.hpp" />
     <ClInclude Include="src\Systems\Physics\physics.hpp" />
     <ClInclude Include="src\ECS\component_array.hpp" />

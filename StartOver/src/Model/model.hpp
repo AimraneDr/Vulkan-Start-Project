@@ -14,11 +14,11 @@
 namespace SO {
 	struct Model {
 		std::shared_ptr<RendererBuffer> vertexBuffer;
-		uint32_t vertexCount;
+		uint32_t vertexCount{0};
 
-		bool hasIndexBuffer;
+		bool hasIndexBuffer{false};
 		std::shared_ptr<RendererBuffer> indexBuffer;
-		uint32_t indexCount;
+		uint32_t indexCount{0};
 	};
 	
 	struct Vertex {
@@ -46,11 +46,15 @@ namespace SO {
 
 		void loadModel(const std::string& path, Model& m);
 		Model loadModel(const std::string& path);
+		static void loadModel(const std::string& path, Model& m, RendererDevice& rDevice);
+		static Model loadModel(const std::string& path, RendererDevice& rDevice);
 
 	private:
 		RendererDevice& rDevice;
 
 		void createVertexBuffers(const std::vector<Vertex>& vertices, Model& out);
 		void createIndexBuffers(const std::vector<uint32_t> &indices, Model& out);
+		static void createVertexBuffers(const std::vector<Vertex>& vertices, Model& out, RendererDevice& rDevice);
+		static void createIndexBuffers(const std::vector<uint32_t>& indices, Model& out, RendererDevice& rDevice);
 	};
 }

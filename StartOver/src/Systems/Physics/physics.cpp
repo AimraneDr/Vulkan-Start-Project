@@ -1,19 +1,21 @@
 #include "physics.hpp"
 #include "GameObject/gameobject.hpp"
 
-//extern ECSManager& manager;
+namespace Systems {
 
-void PhysicsSystem::Init()
-{
-}
-
-void PhysicsSystem::Update(float dt, ECSManager& manager) 
-{
-	for (auto& entity : mEntities)
+	void PhysicsSystem::Init()
 	{
-		auto& transform = manager.GetComponent<SO::TransformComponent>(entity);
-		auto& velocity = manager.GetComponent<MovementComponent>(entity).velocety;
-
-		transform.position += glm::vec3{ 0.0f, -0.1f, 0.0f } * velocity * dt;
 	}
+
+	void PhysicsSystem::Update(float dt)
+	{
+		for (auto& entity : mEntities)
+		{
+			auto& transform = SO::GameObject::Manager.GetComponent<Components::TransformComponent>(entity);
+			auto& velocity = SO::GameObject::Manager.GetComponent<MovementComponent>(entity).velocety;
+
+			transform.position += glm::vec3{ 0.0f, -0.1f, 0.0f } *velocity * dt;
+		}
+	}
+
 }

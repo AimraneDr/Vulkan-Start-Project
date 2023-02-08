@@ -6,17 +6,19 @@
 
 #include <memory>
 
+namespace Systems {
 
-class RenderablesSystem : public System {
-public:
-	void init(std::shared_ptr<SO::RendererDevice>& device, VkRenderPass renderPass, VkDescriptorSetLayout descriptorSetLayout);
-	void shutDown();
-	void render(SO::FrameInfo& frameInfo);
-private:
-	std::shared_ptr<SO::RendererDevice> rDevice;
-	std::unique_ptr<SO::Pipeline> gPipeline;
-	VkPipelineLayout pipelineLayout;
+	class RenderablesSystem : public System {
+	public:
+		void init(std::shared_ptr<SO::RendererDevice>& device, VkRenderPass renderPass, VkDescriptorSetLayout descriptorSetLayout);
+		void shutDown();
+		void render(SO::FrameInfo& frameInfo);
+	private:
+		std::shared_ptr<SO::RendererDevice> rDevice;
+		std::unique_ptr<SO::Pipeline> gPipeline;
+		VkPipelineLayout pipelineLayout;
 
-	void createPipelineLayout(VkDescriptorSetLayout descriptorSetLayout);
-	void createPipeline(VkRenderPass renderPass);
-};
+		void createPipelineLayout(VkDescriptorSetLayout descriptorSetLayout);
+		void createPipeline(VkRenderPass renderPass);
+	};
+}

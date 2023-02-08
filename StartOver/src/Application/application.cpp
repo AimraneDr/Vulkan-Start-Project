@@ -1,7 +1,8 @@
 #include "application.hpp"
 
-#include "Components/camera.hpp"
-#include "Components/mesh_renderer.hpp"
+#include "Components/components.h"
+#include "Model/model.hpp"
+#include "GameObject/gameobject.hpp"
 #include "Systems/Physics/physics.hpp"
 #include "Systems/Renderable/renderable_system.hpp"
 #include "Systems/Renderable/light_source_render_system.hpp"
@@ -20,48 +21,49 @@
 
 
 
-
 namespace SO {
 	const float MAX_DELTA_TIME{ 0.01 };
-	std::shared_ptr<CameraSystem> cameraS;
-	std::shared_ptr<PhysicsSystem> physicsS;
-	std::shared_ptr<RenderablesSystem> renderablesS;
-	std::shared_ptr<PointLightRenderSystem> pointLightRenderS;
+	ECSManager& manager{ GameObject::Manager };
+
+	std::shared_ptr<Systems::CameraSystem> cameraS;
+	std::shared_ptr<Systems::PhysicsSystem> physicsS;
+	std::shared_ptr<Systems::RenderablesSystem> renderablesS;
+	std::shared_ptr<Systems::PointLightRenderSystem> pointLightRenderS;
 
 	App::App() {
 		manager.Init();
 		manager.RegisterComponent<Components::CameraComponent>();
-		manager.RegisterComponent<TransformComponent>();
+		manager.RegisterComponent<Components::TransformComponent>();
 		manager.RegisterComponent<MovementComponent>();
 		manager.RegisterComponent<Components::MeshRenderer>();
 		manager.RegisterComponent<Components::PointLightComponent>();
 
-		cameraS = manager.RegisterSystem<CameraSystem>();
+		cameraS = manager.RegisterSystem<Systems::CameraSystem>();
 		{
 			Signature signature, ro_signature;
 			signature.set(manager.GetComponentType<Components::CameraComponent>());
-			signature.set(manager.GetComponentType<TransformComponent>());
-			manager.SetSystemSignature<CameraSystem>(signature);
+			signature.set(manager.GetComponentType<Components::TransformComponent>());
+			manager.SetSystemSignature<Systems::CameraSystem>(signature);
 		}
-		physicsS = manager.RegisterSystem<PhysicsSystem>();
+		physicsS = manager.RegisterSystem<Systems::PhysicsSystem>();
 		{
 			Signature signature, ro_signature;
-			signature.set(manager.GetComponentType<TransformComponent>());
+			signature.set(manager.GetComponentType<Components::TransformComponent>());
 			signature.set(manager.GetComponentType<MovementComponent>());
-			manager.SetSystemSignature<PhysicsSystem>(signature);
+			manager.SetSystemSignature<Systems::PhysicsSystem>(signature);
 		}
-		renderablesS = manager.RegisterSystem<RenderablesSystem>();
+		renderablesS = manager.RegisterSystem<Systems::RenderablesSystem>();
 		{
 			Signature signature;
 			signature.set(manager.GetComponentType<Components::MeshRenderer>());
-			manager.SetSystemSignature<RenderablesSystem>(signature);
+			manager.SetSystemSignature<Systems::RenderablesSystem>(signature);
 		}
-		pointLightRenderS = manager.RegisterSystem<PointLightRenderSystem>();
+		pointLightRenderS = manager.RegisterSystem<Systems::PointLightRenderSystem>();
 		{
 			Signature signature;
-			signature.set(manager.GetComponentType<TransformComponent>());
+			signature.set(manager.GetComponentType<Components::TransformComponent>());
 			signature.set(manager.GetComponentType<Components::PointLightComponent>());
-			manager.SetSystemSignature<PointLightRenderSystem>(signature);
+			manager.SetSystemSignature<Systems::PointLightRenderSystem>(signature);
 		}
 
 
@@ -102,20 +104,17 @@ namespace SO {
 		renderablesS->init(rDevice, gRenderer.getSwapChainRenderPass(), globalSetLayout->getDescriptorSetLayout());
 		pointLightRenderS->init(rDevice, gRenderer.getSwapChainRenderPass(), globalSetLayout->getDescriptorSetLayout());
 
-		
-		Entity camEID = manager.CreateEntity();
-		manager.AddComponent(camEID, TransformComponent{
-			{.0f,.0f,-4.f},
-			{1.f,1.f,1.f},
-			{.0f,.0f,.0f}
-			});
-		manager.AddComponent(camEID, Components::CameraComponent{});
+		GameObject camObj = GameObject::createGameObject(
+			Components::TransformComponent{
+				{.0f,-5.f,-5.f}
+			}
+		);
+		camObj.AddComponent(Components::CameraComponent{});
 
-		Components::CameraComponent& camera = manager.GetComponent<Components::CameraComponent>(camEID);
-		camera.setViewDirection(glm::vec3{ 0.f }, glm::vec3{ .0f, 0.f,1.f });
+		Components::CameraComponent& camera = camObj.GetComponent<Components::CameraComponent>();
 		camera.aspect = gRenderer.getAspectRatio();
+		camera.setViewDirection(glm::vec3{ 0.f }, glm::vec3{ .0f, 0.f,1.f });
 
-		TransformComponent camTransfomr = manager.GetComponent<TransformComponent>(camEID);
 
 		auto currentTime = std::chrono::high_resolution_clock::now();
 
@@ -129,7 +128,7 @@ namespace SO {
 
 			frameTime = glm::min(frameTime, MAX_DELTA_TIME);
 
-			cameraS->update(frameTime, manager,gWindow.getGLFWwindow());
+			cameraS->update(frameTime, gWindow.getGLFWwindow());
 
 
 			if (VkCommandBuffer commandBuffer = gRenderer.beginFrame()) {
@@ -139,8 +138,7 @@ namespace SO {
 					frameTime,
 					commandBuffer,
 					camera,
-					globalDescriptorSets[frameIndex],
-					manager
+					globalDescriptorSets[frameIndex]
 				};
 				//update
 				GlobalUBO ubo{};
@@ -148,7 +146,7 @@ namespace SO {
 				ubo.view = camera.getViewMat();
 				ubo.inverseView = camera.getInverseViewMat();
 				//Update Systems
-				physicsS->Update(frameTime, manager);
+				physicsS->Update(frameTime);
 				pointLightRenderS->update(frameInfo, ubo);
 
 				uboBuffers[frameIndex]->writeToBuffer(&ubo);
@@ -259,84 +257,49 @@ namespace SO {
     }
 
 	void App::loadGameObjects() {
-
-		Entity e = manager.CreateEntity();
-		GameObject cube = GameObject::createGameObject();
-		cube.eid = e;
-		manager.AddComponent(
-			e,
+		auto trans = Components::TransformComponent{
+			glm::vec3{1.5f, -.5f, 1.f},
+			glm::vec3{1.f, 1.f, 1.f},
+			glm::vec3{.0f, .0f, .0f}
+		};
+		GameObject cube = GameObject::createGameObject(trans);
+		cube.AddComponent(
 			Components::MeshRenderer{
-				modeller.loadModel("C:\\VStudio\\StartOver\\StartOver\\assets\\models\\colored_cube.obj")
+				GameModel::loadModel("C:\\VStudio\\StartOver\\StartOver\\assets\\models\\colored_cube.obj", *rDevice)
 			}
 		);
-		manager.AddComponent(
-			e,
-			TransformComponent{
-				glm::vec3{1.5f, .0f, .0f},
-				glm::vec3{.5f, .5f, .5f},
-				glm::vec3{.0f, .0f, .0f}
-			}
-		);
-		manager.AddComponent(
-			e,
+		cube.AddComponent(
 			MovementComponent{
 				glm::vec3{.0f, -2.f, .0f},
 			}
 		);
 
-
-		e = manager.CreateEntity();
-		GameObject cube1 = GameObject::createGameObject();
-		cube1.eid = e;
-		manager.AddComponent(
-			e,
+		trans.position = { .5f, .5f, .5f };
+		trans.scale = { 2.f, 2.f, 2.f };
+		GameObject cube1 = GameObject::createGameObject(trans);
+		cube1.AddComponent(
 			Components::MeshRenderer{
-				modeller.loadModel("C:\\VStudio\\StartOver\\StartOver\\assets\\models\\smooth_vase.obj")
-			}
-		);
-		manager.AddComponent(
-			e,
-			TransformComponent{
-				glm::vec3{.5f, .5f, .5f},
-				glm::vec3{2.f, 2.f, 2.f},
-				glm::vec3{.0f, .0f, .0f}
+				GameModel::loadModel("C:\\VStudio\\StartOver\\StartOver\\assets\\models\\smooth_vase.obj", *rDevice)
 			}
 		);
 
 
-		e = manager.CreateEntity();
-		GameObject cube2 = GameObject::createGameObject();
-		cube2.eid = e;
-		manager.AddComponent(
-			e,
+		trans.position = { -1.5f, .5f, 0.f };
+		trans.scale = { 2.2f,3.f,1.5f };
+		GameObject cube2 = GameObject::createGameObject(trans);
+		cube2.AddComponent(
 			Components::MeshRenderer{
-				modeller.loadModel("C:\\VStudio\\StartOver\\StartOver\\assets\\models\\flat_vase.obj")
-			}
-		);
-		manager.AddComponent(
-			e,
-			TransformComponent{
-				glm::vec3{-1.5f, .5f, 0.f},
-				glm::vec3{2.2f,3.f,1.5f},
-				glm::vec3{.0f, .0f, .0f}
+				GameModel::loadModel("C:\\VStudio\\StartOver\\StartOver\\assets\\models\\flat_vase.obj", *rDevice)
 			}
 		);
 
-		e = manager.CreateEntity();
-		GameObject cube3 = GameObject::createGameObject();
-		cube3.eid = e;
-		manager.AddComponent(
-			e,
+
+		trans.position = { .0f, .5f, .0f };
+		trans.scale = { 12.f, 12.f, 12.f };
+		GameObject cube3 = GameObject::createGameObject(trans);
+		cube3.AddComponent(
 			Components::MeshRenderer{
-				modeller.loadModel("C:\\VStudio\\StartOver\\StartOver\\assets\\models\\quad.obj")
-			}
-		);
-		manager.AddComponent(
-			e,
-			TransformComponent{
-				glm::vec3{.0f, .5f, .0f},
-				glm::vec3{10.f, 10.f, 10.f},
-				glm::vec3{.0f, .0f, .0f}
+				GameModel::loadModel("C:\\VStudio\\StartOver\\StartOver\\assets\\models\\quad.obj", *rDevice)
 			}
 		);
 
@@ -351,21 +314,19 @@ namespace SO {
 		float a = 0;
 		for (int i = 0; i < lightColors.size(); i++) {
 			a = i + 1;
-			e = manager.CreateEntity();
 			auto rotateLight = glm::rotate(
 				glm::mat4(1.f),
 				(i * glm::two_pi<float>()) / lightColors.size(),
 				{ 0.f, -1.f, 0.f });
-			manager.AddComponent(
-				e,
-				TransformComponent{
-					glm::vec3(rotateLight * glm::vec4(-3.f, -1.5f, -3.f, 1.f)),
-					glm::vec3{1.f, 1.f, 1.f},
-					glm::vec3{.0f, .0f, .0f}
+
+			GameObject lightObj = GameObject::createGameObject(
+				Components::TransformComponent{
+						glm::vec3(rotateLight * glm::vec4(-3.f, -1.5f, -3.f, 1.f)),
+						glm::vec3{1.f, 1.f, 1.f},
+						glm::vec3{.0f, .0f, .0f}
 				}
 			);
-			manager.AddComponent(
-				e,
+			lightObj.AddComponent(
 				Components::PointLightComponent{
 					lightColors[i],
 					.25f,

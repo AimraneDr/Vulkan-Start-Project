@@ -1,43 +1,27 @@
 #pragma once
 
-#include "Model/model.hpp"
-#include "ECS/types.hpp"
-
-#include <glm/gtc/matrix_transform.hpp>
-
-#include <memory>
-#include <Components/pointlight_component.hpp>
-#include <unordered_map>
-
+#include "ECS/ecs_manager.hpp"
+#include "Components/transform.hpp"
 
 
 
 namespace SO {
-
-	struct TransformComponent {
-		glm::vec3 position;
-		glm::vec3 scale{ 1.0f,1.0f,1.0f };
-		glm::vec3 rotation;
-
-		// Matrix corrsponds to Translate * Ry * Rx * Rz * Scale
-		 // Rotations correspond to Tait-bryan angles of Y(1), X(2), Z(3)
-		 // https://en.wikipedia.org/wiki/Euler_angles#Rotation_matrix
-		glm::mat4 mat4();
-		
-		glm::mat3 normalMat();
-	};
-
 	class GameObject {
 	public:
-		using id_t = unsigned int;
-		using Map = std::unordered_map<id_t, GameObject>;
-
-		Entity eid{};
+		static ECSManager Manager;
+		Components::TransformComponent& transform;
 
 		static GameObject createGameObject() {
-			static id_t current_id = 0;
-			return GameObject{ current_id++ };
+			Entity newID = Manager.CreateEntity();
+			return GameObject( newID );
 		}
+
+		//Note : the object created by this function have a copy of the transform component provided in the argument, not a ref to it
+		static GameObject createGameObject(Components::TransformComponent _transfomr) {
+			Entity newID = Manager.CreateEntity();
+			return GameObject( newID, _transfomr );
+		}
+
 
 		//Copy
 		GameObject(const GameObject&) = delete;
@@ -47,9 +31,19 @@ namespace SO {
 		GameObject(GameObject&&) = default;
 		GameObject& operator=(GameObject&&) = default;
 
-		const id_t getID() { return id; }
+		template<typename T>
+		void AddComponent(T component) { Manager.AddComponent(id, component); };
+
+		template<typename T>
+		T& GetComponent() { return Manager.GetComponent<T>(id); };
+
+		template<typename T>
+		void RemoveComponent(T component) { Manager.RemoveComponent<T>(id); };
+
+		const Entity getID() { return id; };
 	private:
-		GameObject(id_t id) : id{ id } {}
-		id_t id;
+		GameObject(Entity id);
+		GameObject(Entity id, Components::TransformComponent _transfomr);
+		Entity id;
 	};
 }
