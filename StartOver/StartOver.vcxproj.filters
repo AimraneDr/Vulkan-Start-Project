@@ -52,6 +52,7 @@
     <ClInclude Include="src\Systems\Camera\camera_system.hpp" />
     <ClInclude Include="src\Components\components.h" />
     <ClInclude Include="src\Components\transform.hpp" />
+    <ClInclude Include="src\Components\aabb_collider.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\simple.vert" />

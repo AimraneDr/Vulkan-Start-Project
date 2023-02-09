@@ -37,6 +37,7 @@ namespace SO {
 		manager.RegisterComponent<MovementComponent>();
 		manager.RegisterComponent<Components::MeshRenderer>();
 		manager.RegisterComponent<Components::PointLightComponent>();
+		manager.RegisterComponent<Components::AABBCollider>();
 
 		cameraS = manager.RegisterSystem<Systems::CameraSystem>();
 		{
@@ -50,6 +51,7 @@ namespace SO {
 			Signature signature, ro_signature;
 			signature.set(manager.GetComponentType<Components::TransformComponent>());
 			signature.set(manager.GetComponentType<MovementComponent>());
+			signature.set(manager.GetComponentType<Components::AABBCollider>());
 			manager.SetSystemSignature<Systems::PhysicsSystem>(signature);
 		}
 		renderablesS = manager.RegisterSystem<Systems::RenderablesSystem>();
@@ -106,13 +108,12 @@ namespace SO {
 
 		GameObject camObj = GameObject::createGameObject(
 			Components::TransformComponent{
-				{.0f,-5.f,-5.f}
+				{.0f,-5.f,-15.f}
 			}
 		);
 		camObj.AddComponent(Components::CameraComponent{});
 
 		Components::CameraComponent& camera = camObj.GetComponent<Components::CameraComponent>();
-		camera.aspect = gRenderer.getAspectRatio();
 		camera.setViewDirection(glm::vec3{ 0.f }, glm::vec3{ .0f, 0.f,1.f });
 
 
@@ -128,6 +129,7 @@ namespace SO {
 
 			frameTime = glm::min(frameTime, MAX_DELTA_TIME);
 
+			camera.aspect = gRenderer.getAspectRatio();
 			cameraS->update(frameTime, gWindow.getGLFWwindow());
 
 
@@ -258,7 +260,7 @@ namespace SO {
 
 	void App::loadGameObjects() {
 		auto trans = Components::TransformComponent{
-			glm::vec3{1.5f, -.5f, 1.f},
+			glm::vec3{1.5f, -5.5f, 1.f},
 			glm::vec3{1.f, 1.f, 1.f},
 			glm::vec3{.0f, .0f, .0f}
 		};
@@ -270,11 +272,17 @@ namespace SO {
 		);
 		cube.AddComponent(
 			MovementComponent{
-				glm::vec3{.0f, -2.f, .0f},
+				glm::vec3{.0f, -5.f, .0f},
+			}
+		);
+		cube.AddComponent(
+			Components::AABBCollider{
+				glm::vec3{1.5f, -1.5f, 1.f},
+				2.f,2.f,2.f
 			}
 		);
 
-		trans.position = { .5f, .5f, .5f };
+		trans.position = { 5.f, 0.f, 5.f };
 		trans.scale = { 2.f, 2.f, 2.f };
 		GameObject cube1 = GameObject::createGameObject(trans);
 		cube1.AddComponent(
@@ -284,7 +292,7 @@ namespace SO {
 		);
 
 
-		trans.position = { -1.5f, .5f, 0.f };
+		trans.position = { -1.5f, 0.f, 0.f };
 		trans.scale = { 2.2f,3.f,1.5f };
 		GameObject cube2 = GameObject::createGameObject(trans);
 		cube2.AddComponent(
@@ -293,8 +301,8 @@ namespace SO {
 			}
 		);
 
-
-		trans.position = { .0f, .5f, .0f };
+		//ground
+		trans.position = { .0f, .0f, .0f };
 		trans.scale = { 12.f, 12.f, 12.f };
 		GameObject cube3 = GameObject::createGameObject(trans);
 		cube3.AddComponent(

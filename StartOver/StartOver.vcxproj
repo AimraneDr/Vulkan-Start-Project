@@ -169,6 +169,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Application\application.hpp" />
+    <ClInclude Include="src\Components\aabb_collider.hpp" />
     <ClInclude Include="src\Components\camera.hpp" />
     <ClInclude Include="src\Components\components.h" />
     <ClInclude Include="src\Components\pointlight_component.hpp" />
