@@ -21,8 +21,10 @@ layout(set = 0, binding = 0) uniform GlobalUbo {
   mat4 view;
   mat4 inverseView;
   PointLight pointLights[10];
+  vec4 directionalLight;
   vec4 ambientLightColor; // w is intensity
   int numLights;
+  float ambient;
 } ubo;
 
 layout(push_constant) uniform Push {

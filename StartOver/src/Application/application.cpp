@@ -5,6 +5,8 @@
 #include "GameObject/gameobject.hpp"
 #include "Systems/Physics/physics.hpp"
 #include "Systems/Renderable/renderable_system.hpp"
+#include "Systems/Renderable/wireframe_render_system.hpp"
+#include "Systems/Renderable/solid_mode_render_system.hpp"
 #include "Systems/Renderable/light_source_render_system.hpp"
 #include "Systems/Camera/camera_system.hpp"
 
@@ -28,7 +30,14 @@ namespace SO {
 	std::shared_ptr<Systems::CameraSystem> cameraS;
 	std::shared_ptr<Systems::PhysicsSystem> physicsS;
 	std::shared_ptr<Systems::RenderablesSystem> renderablesS;
+	std::shared_ptr<Systems::WireframeRenderSystem> wireframeRenderS;
+	std::shared_ptr<Systems::SolidModeRenderSystem> SolidModeRenderS;
 	std::shared_ptr<Systems::PointLightRenderSystem> pointLightRenderS;
+
+	bool
+		enableWireFrame = false,
+		enableSolidMode = false,
+		enableRenderView = true;
 
 	App::App() {
 		manager.Init();
@@ -60,6 +69,18 @@ namespace SO {
 			signature.set(manager.GetComponentType<Components::MeshRenderer>());
 			manager.SetSystemSignature<Systems::RenderablesSystem>(signature);
 		}
+		wireframeRenderS = manager.RegisterSystem<Systems::WireframeRenderSystem>();
+		{
+			Signature signature;
+			signature.set(manager.GetComponentType<Components::MeshRenderer>());
+			manager.SetSystemSignature<Systems::WireframeRenderSystem>(signature);
+		}
+		SolidModeRenderS = manager.RegisterSystem<Systems::SolidModeRenderSystem>();
+		{
+			Signature signature;
+			signature.set(manager.GetComponentType<Components::MeshRenderer>());
+			manager.SetSystemSignature<Systems::SolidModeRenderSystem>(signature);
+		}
 		pointLightRenderS = manager.RegisterSystem<Systems::PointLightRenderSystem>();
 		{
 			Signature signature;
@@ -76,6 +97,22 @@ namespace SO {
 		loadGameObjects();
 	}
 	App::~App() {
+	}
+
+	void processInputs(GLFWwindow* window) {
+		if (glfwGetKey(window, GLFW_KEY_0) == GLFW_PRESS) {
+			enableWireFrame = true;
+			enableRenderView = false;
+		}
+		if (glfwGetKey(window, GLFW_KEY_9) == GLFW_PRESS) {
+			enableRenderView = false;
+			enableSolidMode = true;
+		}
+		if (glfwGetKey(window, GLFW_KEY_8) == GLFW_PRESS) {
+			enableWireFrame = false;
+			enableSolidMode = false;
+			enableRenderView = true;
+		}
 	}
 
 	void App::run() {
@@ -104,6 +141,8 @@ namespace SO {
 				.build(globalDescriptorSets[i]);
 		}
 		renderablesS->init(rDevice, gRenderer.getSwapChainRenderPass(), globalSetLayout->getDescriptorSetLayout());
+		wireframeRenderS->init(rDevice, gRenderer.getSwapChainRenderPass(), globalSetLayout->getDescriptorSetLayout());
+		SolidModeRenderS->init(rDevice, gRenderer.getSwapChainRenderPass(), globalSetLayout->getDescriptorSetLayout());
 		pointLightRenderS->init(rDevice, gRenderer.getSwapChainRenderPass(), globalSetLayout->getDescriptorSetLayout());
 
 		GameObject camObj = GameObject::createGameObject(
@@ -121,7 +160,7 @@ namespace SO {
 
 		while (!gWindow.shouldClose()) {
 			glfwPollEvents();
-
+			processInputs(gWindow.getGLFWwindow());
 
 			auto newTime = std::chrono::high_resolution_clock::now();
 			float frameTime = std::chrono::duration<float, std::chrono::seconds::period>(newTime - currentTime).count();
@@ -148,7 +187,7 @@ namespace SO {
 				ubo.view = camera.getViewMat();
 				ubo.inverseView = camera.getInverseViewMat();
 				//Update Systems
-				physicsS->Update(frameTime);
+				physicsS->Update(frameTime, *rDevice);
 				pointLightRenderS->update(frameInfo, ubo);
 
 				uboBuffers[frameIndex]->writeToBuffer(&ubo);
@@ -156,8 +195,12 @@ namespace SO {
 
 				//render
 				gRenderer.beginSwapChainRenderPass(commandBuffer);
-				renderablesS->render(frameInfo);
-				pointLightRenderS->render(frameInfo);
+				if (enableWireFrame)	wireframeRenderS->render(frameInfo);
+				if (enableSolidMode)	SolidModeRenderS->render(frameInfo);
+				if (enableRenderView) {
+					pointLightRenderS->render(frameInfo);
+					renderablesS->render(frameInfo);
+				}
 				gRenderer.endSwapChainRenderPass(commandBuffer);
 				gRenderer.endFrame();
 			}
@@ -166,6 +209,8 @@ namespace SO {
 
 		vkDeviceWaitIdle(rDevice->device());
 		renderablesS->shutDown();
+		wireframeRenderS->shutDown();
+		SolidModeRenderS->shutDown();
 		pointLightRenderS->shutDown();
 	}
 
@@ -272,14 +317,15 @@ namespace SO {
 		);
 		cube.AddComponent(
 			MovementComponent{
-				glm::vec3{.0f, -5.f, .0f},
+				glm::vec3{.0f, -5.f, 5.f}
 			}
 		);
 		cube.AddComponent(
-			Components::AABBCollider{
-				glm::vec3{1.5f, -1.5f, 1.f},
-				2.f,2.f,2.f
-			}
+			Components::AABBCollider(
+				glm::vec3(1.5f, -1.5f, 1.f),
+				2.f, 2.f, 2.f,
+				*rDevice
+			)
 		);
 
 		trans.position = { 5.f, 0.f, 5.f };
@@ -303,7 +349,7 @@ namespace SO {
 
 		//ground
 		trans.position = { .0f, .0f, .0f };
-		trans.scale = { 12.f, 12.f, 12.f };
+		trans.scale = { 24.f, 12.f, 24.f };
 		GameObject cube3 = GameObject::createGameObject(trans);
 		cube3.AddComponent(
 			Components::MeshRenderer{

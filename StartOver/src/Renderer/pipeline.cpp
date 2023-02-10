@@ -28,6 +28,7 @@ namespace SO {
 
 		config.inputAssemblyInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
 		config.inputAssemblyInfo.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
+		//config.inputAssemblyInfo.topology = VK_PRIMITIVE_TOPOLOGY_LINE_LIST;
 		config.inputAssemblyInfo.primitiveRestartEnable = VK_FALSE;
 
 		config.viewportInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
@@ -40,7 +41,8 @@ namespace SO {
 		config.rasterizationInfo.depthClampEnable = VK_FALSE;
 		config.rasterizationInfo.rasterizerDiscardEnable = VK_FALSE;
 		config.rasterizationInfo.polygonMode = VK_POLYGON_MODE_FILL;
-		config.rasterizationInfo.lineWidth = 1.0f;
+		//config.rasterizationInfo.polygonMode = VK_POLYGON_MODE_LINE;
+		config.rasterizationInfo.lineWidth = 1.f;
 		config.rasterizationInfo.cullMode = VK_CULL_MODE_BACK_BIT;
 		config.rasterizationInfo.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
 		config.rasterizationInfo.depthBiasEnable = VK_FALSE;
@@ -88,7 +90,8 @@ namespace SO {
 
 		config.dynamicStateEnables = {
 			VK_DYNAMIC_STATE_VIEWPORT,
-			VK_DYNAMIC_STATE_SCISSOR
+			VK_DYNAMIC_STATE_SCISSOR,
+			//VK_DYNAMIC_STATE_LINE_WIDTH
 		};
 		config.dynamicStateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
 		config.dynamicStateInfo.dynamicStateCount = static_cast<uint32_t>(config.dynamicStateEnables.size());

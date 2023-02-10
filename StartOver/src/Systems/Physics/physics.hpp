@@ -1,6 +1,7 @@
 #pragma once
 #include "ECS/system.hpp"
 #include <glm/glm.hpp>
+#include "Renderer/device.hpp"
 
 //Temporary Component
 struct MovementComponent {
@@ -13,6 +14,7 @@ namespace Systems {
 	public:
 		void Init();
 
-		void Update(float dt);
+		//TODO remove the dependency on render device from this system
+		void Update(float dt, SO::RendererDevice& device);
 	};
 }

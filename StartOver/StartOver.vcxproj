@@ -164,6 +164,8 @@
     <ClCompile Include="src\Renderer\pipeline.cpp" />
     <ClCompile Include="src\Systems\Renderable\light_source_render_system.cpp" />
     <ClCompile Include="src\Systems\Renderable\renderable_system.cpp" />
+    <ClCompile Include="src\Systems\Renderable\solid_mode_render_system.cpp" />
+    <ClCompile Include="src\Systems\Renderable\wireframe_render_system.cpp" />
     <ClCompile Include="src\Utils\FileManagement\file_manager.cpp" />
     <ClCompile Include="src\Window\window.cpp" />
   </ItemGroup>
@@ -196,6 +198,8 @@
     <ClInclude Include="src\Components\mesh_renderer.hpp" />
     <ClInclude Include="src\Systems\Renderable\light_source_render_system.hpp" />
     <ClInclude Include="src\Systems\Renderable\renderable_system.hpp" />
+    <ClInclude Include="src\Systems\Renderable\solid_mode_render_system.hpp" />
+    <ClInclude Include="src\Systems\Renderable\wireframe_render_system.hpp" />
     <ClInclude Include="src\Utils\FileManagement\file_manager.h" />
     <ClInclude Include="src\Utils\utils.hpp" />
     <ClInclude Include="src\Window\window.hpp" />
