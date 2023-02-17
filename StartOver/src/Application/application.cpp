@@ -1,6 +1,7 @@
 #include "application.hpp"
 
 #include "Components/components.h"
+#include "Resources/resources_loader.hpp"
 #include "Model/model.hpp"
 #include "GameObject/gameobject.hpp"
 #include "Systems/Physics/physics.hpp"
@@ -187,7 +188,7 @@ namespace SO {
 				ubo.view = camera.getViewMat();
 				ubo.inverseView = camera.getInverseViewMat();
 				//Update Systems
-				physicsS->Update(frameTime, *rDevice);
+				physicsS->Update(frameTime);
 				pointLightRenderS->update(frameInfo, ubo);
 
 				uboBuffers[frameIndex]->writeToBuffer(&ubo);
@@ -215,7 +216,7 @@ namespace SO {
 	}
 
     // temporary helper function, creates a 1x1x1 cube centered at offset
-    std::unique_ptr<GameModel> createCubeModel(RendererDevice& device, glm::vec3 offset) {
+    std::unique_ptr<Model> createCubeModel(RendererDevice& device, glm::vec3 offset) {
 		glm::vec3 a{ .5f, -.5f, .5f };
 		glm::vec3 b{ .5f, -.5f, -.5f };
 		glm::vec3 c{ -.5f, -.5f, -.5f };
@@ -234,58 +235,7 @@ namespace SO {
 		glm::vec3 brown{ .39f, .26f, .12f };
 		glm::vec3 violet{ .46f, .22f, .69f };
 
-		//Use without indices
-		//builder.vertices = {
-
-		//	// top face (white)
-		//	{a, {.9f, .9f, .9f}},
-		//	{c, {.9f, .9f, .9f}},
-		//	{b, {.9f, .9f, .9f}},
-		//	{a, {.9f, .9f, .9f}},
-		//	{d, {.9f, .9f, .9f}},
-		//	{c, {.9f, .9f, .9f}},
-
-		//	// right face (yellow)
-		//	{a, {.8f, .4f, .1f}},
-		//	{f, {.8f, .4f, .1f}},
-		//	{e, {.8f, .4f, .1f}},
-		//	{a, {.8f, .4f, .1f}},
-		//	{b, {.8f, .4f, .1f}},
-		//	{f, {.8f, .4f, .1f}},
-
-		//	// front face (orange)
-		//	{b, {.9f, .6f, .1f}},
-		//	{c, {.9f, .6f, .1f}},
-		//	{f, {.9f, .6f, .1f}},
-		//	{c, {.9f, .6f, .1f}},
-		//	{g, {.9f, .6f, .1f}},
-		//	{f, {.9f, .6f, .1f}},
-
-		//	// left face (red)
-		//	{c, {.8f, .1f, .1f}},
-		//	{d, {.8f, .1f, .1f}},
-		//	{g, {.8f, .1f, .1f}},
-		//	{d, {.8f, .1f, .1f}},
-		//	{h, {.8f, .1f, .1f}},
-		//	{g, {.8f, .1f, .1f}},
-
-		//	// bottom face (blue)
-		//	{f, {.1f, .1f, .8f}},
-		//	{h, {.1f, .1f, .8f}},
-		//	{e, {.1f, .1f, .8f}},
-		//	{f, {.1f, .1f, .8f}},
-		//	{g, {.1f, .1f, .8f}},
-		//	{h, {.1f, .1f, .8f}},
-
-		//	// back face (green)
-		//	{a, {.1f, .8f, .1f}},
-		//	{h, {.1f, .8f, .1f}},
-		//	{d, {.1f, .8f, .1f}},
-		//	{a, {.1f, .8f, .1f}},
-		//	{e, {.1f, .8f, .1f}},
-		//	{h, {.1f, .8f, .1f}}
-
-		//};
+		
 		std::vector<Vertex> vertices = {
 			{a, white},
 			{b, yellow},
@@ -300,40 +250,44 @@ namespace SO {
         for (auto& v : vertices) {
             v.pos += offset;
         }
-        return std::make_unique<GameModel>(device);
+		std::unique_ptr<Model> hh = std::make_unique<Model>();
+
+        return nullptr;
     }
 
 	void App::loadGameObjects() {
 		auto trans = Components::TransformComponent{
-			glm::vec3{1.5f, -5.5f, 1.f},
+			glm::vec3{0.5f, -5.5f, .5f},
 			glm::vec3{1.f, 1.f, 1.f},
 			glm::vec3{.0f, .0f, .0f}
 		};
+
 		GameObject cube = GameObject::createGameObject(trans);
 		cube.AddComponent(
 			Components::MeshRenderer{
-				GameModel::loadModel("C:\\VStudio\\StartOver\\StartOver\\assets\\models\\colored_cube.obj", *rDevice)
+				Loader::LoadObjFormat("C:\\VStudio\\StartOver\\StartOver\\assets\\models\\colored_cube.obj")
 			}
 		);
 		cube.AddComponent(
 			MovementComponent{
-				glm::vec3{.0f, -5.f, 5.f}
+				glm::vec3{.0f, -10.f, 0.f}
 			}
 		);
 		cube.AddComponent(
 			Components::AABBCollider(
-				glm::vec3(1.5f, -1.5f, 1.f),
-				2.f, 2.f, 2.f,
-				*rDevice
+				cube.transform.position,
+				glm::vec3{ 1.f, 1.f, 1.f }
 			)
 		);
+
+
 
 		trans.position = { 5.f, 0.f, 5.f };
 		trans.scale = { 2.f, 2.f, 2.f };
 		GameObject cube1 = GameObject::createGameObject(trans);
 		cube1.AddComponent(
 			Components::MeshRenderer{
-				GameModel::loadModel("C:\\VStudio\\StartOver\\StartOver\\assets\\models\\smooth_vase.obj", *rDevice)
+				Loader::LoadObjFormat("C:\\VStudio\\StartOver\\StartOver\\assets\\models\\smooth_vase.obj")
 			}
 		);
 
@@ -343,17 +297,17 @@ namespace SO {
 		GameObject cube2 = GameObject::createGameObject(trans);
 		cube2.AddComponent(
 			Components::MeshRenderer{
-				GameModel::loadModel("C:\\VStudio\\StartOver\\StartOver\\assets\\models\\flat_vase.obj", *rDevice)
+				Loader::LoadObjFormat("C:\\VStudio\\StartOver\\StartOver\\assets\\models\\flat_vase.obj")
 			}
 		);
 
 		//ground
 		trans.position = { .0f, .0f, .0f };
-		trans.scale = { 24.f, 12.f, 24.f };
+		trans.scale = { 24.f, 1.f, 24.f };
 		GameObject cube3 = GameObject::createGameObject(trans);
 		cube3.AddComponent(
 			Components::MeshRenderer{
-				GameModel::loadModel("C:\\VStudio\\StartOver\\StartOver\\assets\\models\\quad.obj", *rDevice)
+				Loader::LoadObjFormat("C:\\VStudio\\StartOver\\StartOver\\assets\\models\\quad.obj")
 			}
 		);
 

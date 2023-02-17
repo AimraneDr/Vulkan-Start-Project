@@ -8,6 +8,9 @@
 
 namespace SO {
 
+    RendererDevice* RendererDevice::globalDevice;
+
+
     // local callback functions
     static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(
         VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
@@ -48,13 +51,16 @@ namespace SO {
     }
 
     // class member functions
-    RendererDevice::RendererDevice(GameWindow& window) : window{ window } {
+    RendererDevice::RendererDevice(GameWindow& window) 
+        : window{ window }
+    {
         createInstance();
         setupDebugMessenger();
         createSurface();
         pickPhysicalDevice();
         createLogicalDevice();
         createCommandPool();
+        globalDevice = std::move(this);
     }
 
     RendererDevice::~RendererDevice() {

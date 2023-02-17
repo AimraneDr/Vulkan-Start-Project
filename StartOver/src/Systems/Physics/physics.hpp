@@ -15,6 +15,6 @@ namespace Systems {
 		void Init();
 
 		//TODO remove the dependency on render device from this system
-		void Update(float dt, SO::RendererDevice& device);
+		void Update(float dt);
 	};
 }

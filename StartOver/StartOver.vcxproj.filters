@@ -22,6 +22,7 @@
     <ClCompile Include="src\Components\transform.cpp" />
     <ClCompile Include="src\Systems\Renderable\wireframe_render_system.cpp" />
     <ClCompile Include="src\Systems\Renderable\solid_mode_render_system.cpp" />
+    <ClCompile Include="src\Resources\resources_loader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Window\window.hpp" />
@@ -57,6 +58,8 @@
     <ClInclude Include="src\Components\aabb_collider.hpp" />
     <ClInclude Include="src\Systems\Renderable\wireframe_render_system.hpp" />
     <ClInclude Include="src\Systems\Renderable\solid_mode_render_system.hpp" />
+    <ClInclude Include="src\Resources\resources_loader.hpp" />
+    <ClInclude Include="src\defines.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\simple.vert" />

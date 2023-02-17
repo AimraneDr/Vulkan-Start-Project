@@ -150,6 +150,7 @@
     <ClCompile Include="src\Application\application.cpp" />
     <ClCompile Include="src\Components\camera.cpp" />
     <ClCompile Include="src\Components\transform.cpp" />
+    <ClCompile Include="src\Resources\resources_loader.cpp" />
     <ClCompile Include="src\Systems\Camera\camera_system.cpp" />
     <ClCompile Include="src\Systems\Physics\physics.cpp" />
     <ClCompile Include="src\GameObject\gameobject.cpp" />
@@ -176,6 +177,8 @@
     <ClInclude Include="src\Components\components.h" />
     <ClInclude Include="src\Components\pointlight_component.hpp" />
     <ClInclude Include="src\Components\transform.hpp" />
+    <ClInclude Include="src\defines.h" />
+    <ClInclude Include="src\Resources\resources_loader.hpp" />
     <ClInclude Include="src\Systems\Camera\camera_system.hpp" />
     <ClInclude Include="src\Systems\Physics\physics.hpp" />
     <ClInclude Include="src\ECS\component_array.hpp" />

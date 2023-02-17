@@ -74,10 +74,10 @@ namespace Systems {
 
 	void SolidModeRenderSystem::draw(VkCommandBuffer commandBuffer, SO::Model& m) {
 		if (m.hasIndexBuffer) {
-			vkCmdDrawIndexed(commandBuffer, m.indexCount, 1, 0, 0, 0);
+			vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(m.indices.size()), 1, 0, 0, 0);
 		}
 		else {
-			vkCmdDraw(commandBuffer, m.vertexCount, 1, 0, 0);
+			vkCmdDraw(commandBuffer, static_cast<uint32_t>(m.vertices.size()), 1, 0, 0);
 		}
 	}
 

@@ -11,6 +11,7 @@ namespace SO {
 	public:
 		static constexpr int WIDTH = 800;
 		static constexpr int HEIGHT = 600;
+		
 
 		App();
 		~App();

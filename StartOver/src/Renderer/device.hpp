@@ -5,6 +5,7 @@
 #include "Renderer/queuefamily.hpp"
 
 #include <vector>
+#include <memory>
 #include <string>
 
 namespace SO {
@@ -14,6 +15,7 @@ namespace SO {
         std::vector<VkPresentModeKHR> presentModes;
     };
 
+
 	class RendererDevice {
     public:
 #ifdef NDEBUG
@@ -21,15 +23,17 @@ namespace SO {
 #else
         const bool enableValidationLayers = true;
 #endif
+        static RendererDevice* globalDevice;
+        VkPhysicalDeviceProperties properties;
 
         RendererDevice(GameWindow& window);
         ~RendererDevice();
 
         // Not copyable or movable
         RendererDevice(const RendererDevice&) = delete;
-        RendererDevice& operator=(const RendererDevice&) = delete;
+        RendererDevice& operator=(const RendererDevice&) = default;
         RendererDevice(RendererDevice&&) = delete;
-        RendererDevice& operator=(RendererDevice&&) = delete;
+        RendererDevice& operator=(RendererDevice&&) = default;
 
         VkCommandPool getCommandPool() { return commandPool; }
         VkDevice device() { return device_; }
@@ -61,7 +65,6 @@ namespace SO {
             VkImage& image,
             VkDeviceMemory& imageMemory);
 
-        VkPhysicalDeviceProperties properties;
 
     private:
         void createInstance();
@@ -96,4 +99,5 @@ namespace SO {
         const std::vector<const char*> deviceExtensions = { VK_KHR_SWAPCHAIN_EXTENSION_NAME };
 
 	};
+
 }

@@ -23,9 +23,8 @@ namespace SO {
 		glm::mat4 inverseView{ 1.0f };
 		PointLight pointlights[MAX_POINT_LIGHTS];
 		glm::vec4 directionalLight{ 1.f, -3.f, -1.f, 1.f };
-		glm::vec4 ambientLightColor{ 1.f, 1.f, 1.f, .02f };//w = intensity
+		glm::vec4 ambientLightColor{ 1.f, 1.f, 1.f, .05f };//w = intensity
 		int numLights;
-		float ambient{ 0.05 };
 	};
 	//struct GlobalUBO {
 	//	glm::mat4 projection{ 1.f };
