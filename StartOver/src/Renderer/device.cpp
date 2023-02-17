@@ -8,6 +8,7 @@
 
 namespace SO {
 
+    //reference to the rendering device after it is created
     RendererDevice* RendererDevice::globalDevice;
 
 

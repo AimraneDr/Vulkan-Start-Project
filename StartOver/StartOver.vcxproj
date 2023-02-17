@@ -76,7 +76,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\libs\glm;C:\libs\glfw-3.3.8.bin.WIN64\include;C:\VulkanSDK\1.3.231.1\Include;C:\libs\stb;C:\libs\TinyObjLoader;$(ProjectDir)src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\libs\glm;C:\libs\glfw-3.3.8.bin.WIN64\include;C:\VulkanSDK\1.3.231.1\Include;C:\libs\stb;C:\libs\TinyObjLoader;$(ProjectDir)src;$(ProjectDir)ThirdParty\imgui-master;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <ShowIncludes>true</ShowIncludes>
     </ClCompile>
@@ -86,6 +86,9 @@
       <AdditionalLibraryDirectories>C:\VulkanSDK\1.3.231.1\Lib;C:\libs\glfw-3.3.8.bin.WIN64\lib-vc2015;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>vulkan-1.lib;glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PreBuildEvent>
+      <Command>"C:\VStudio\StartOver\StartOver\shaders\compile.bat"</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -95,7 +98,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\libs\glm;C:\libs\glfw-3.3.8.bin.WIN64\include;C:\VulkanSDK\1.3.231.1\Include;C:\libs\stb;C:\libs\TinyObjLoader;$(ProjectDir)src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\libs\glm;C:\libs\glfw-3.3.8.bin.WIN64\include;C:\VulkanSDK\1.3.231.1\Include;C:\libs\stb;C:\libs\TinyObjLoader;$(ProjectDir)src;$(ProjectDir)ThirdParty\imgui-master;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <ShowIncludes>true</ShowIncludes>
     </ClCompile>
@@ -107,6 +110,9 @@
       <AdditionalLibraryDirectories>C:\VulkanSDK\1.3.231.1\Lib;C:\libs\glfw-3.3.8.bin.WIN64\lib-vc2015;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>vulkan-1.lib;glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PreBuildEvent>
+      <Command>"C:\VStudio\StartOver\StartOver\shaders\compile.bat"</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -114,7 +120,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\libs\glm;C:\libs\glfw-3.3.8.bin.WIN64\include;C:\VulkanSDK\1.3.231.1\Include;C:\libs\stb;C:\libs\TinyObjLoader;$(ProjectDir)src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\libs\glm;C:\libs\glfw-3.3.8.bin.WIN64\include;C:\VulkanSDK\1.3.231.1\Include;C:\libs\stb;C:\libs\TinyObjLoader;$(ProjectDir)src;$(ProjectDir)ThirdParty\imgui-master;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <ShowIncludes>true</ShowIncludes>
     </ClCompile>
@@ -124,6 +130,9 @@
       <AdditionalLibraryDirectories>C:\VulkanSDK\1.3.231.1\Lib;C:\libs\glfw-3.3.8.bin.WIN64\lib-vc2015;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>vulkan-1.lib;glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PreBuildEvent>
+      <Command>"C:\VStudio\StartOver\StartOver\shaders\compile.bat"</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -133,7 +142,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\libs\glm;C:\libs\glfw-3.3.8.bin.WIN64\include;C:\VulkanSDK\1.3.231.1\Include;C:\libs\stb;C:\libs\TinyObjLoader;$(ProjectDir)src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\libs\glm;C:\libs\glfw-3.3.8.bin.WIN64\include;C:\VulkanSDK\1.3.231.1\Include;C:\libs\stb;C:\libs\TinyObjLoader;$(ProjectDir)src;$(ProjectDir)ThirdParty\imgui-master;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <ShowIncludes>true</ShowIncludes>
     </ClCompile>
@@ -145,6 +154,9 @@
       <AdditionalLibraryDirectories>C:\VulkanSDK\1.3.231.1\Lib;C:\libs\glfw-3.3.8.bin.WIN64\lib-vc2015;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>vulkan-1.lib;glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PreBuildEvent>
+      <Command>"C:\VStudio\StartOver\StartOver\shaders\compile.bat"</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\Application\application.cpp" />
@@ -163,16 +175,22 @@
     <ClCompile Include="src\Renderer\renderer.cpp" />
     <ClCompile Include="src\Renderer\swapchain.cpp" />
     <ClCompile Include="src\Renderer\pipeline.cpp" />
+    <ClCompile Include="src\Systems\Renderable\debug_collision_render_system.cpp" />
     <ClCompile Include="src\Systems\Renderable\light_source_render_system.cpp" />
     <ClCompile Include="src\Systems\Renderable\renderable_system.cpp" />
     <ClCompile Include="src\Systems\Renderable\solid_mode_render_system.cpp" />
     <ClCompile Include="src\Systems\Renderable\wireframe_render_system.cpp" />
     <ClCompile Include="src\Utils\FileManagement\file_manager.cpp" />
     <ClCompile Include="src\Window\window.cpp" />
+    <ClCompile Include="ThirdParty\imgui-master\imgui.cpp" />
+    <ClCompile Include="ThirdParty\imgui-master\imgui_demo.cpp" />
+    <ClCompile Include="ThirdParty\imgui-master\imgui_draw.cpp" />
+    <ClCompile Include="ThirdParty\imgui-master\imgui_tables.cpp" />
+    <ClCompile Include="ThirdParty\imgui-master\imgui_widgets.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Application\application.hpp" />
-    <ClInclude Include="src\Components\aabb_collider.hpp" />
+    <ClInclude Include="src\Components\Physics\box_collider.hpp" />
     <ClInclude Include="src\Components\camera.hpp" />
     <ClInclude Include="src\Components\components.h" />
     <ClInclude Include="src\Components\pointlight_component.hpp" />
@@ -199,6 +217,7 @@
     <ClInclude Include="src\Renderer\frame_info.hpp" />
     <ClInclude Include="src\Renderer\pipeline.hpp" />
     <ClInclude Include="src\Components\mesh_renderer.hpp" />
+    <ClInclude Include="src\Systems\Renderable\debug_collision_render_system.hpp" />
     <ClInclude Include="src\Systems\Renderable\light_source_render_system.hpp" />
     <ClInclude Include="src\Systems\Renderable\renderable_system.hpp" />
     <ClInclude Include="src\Systems\Renderable\solid_mode_render_system.hpp" />
@@ -206,6 +225,12 @@
     <ClInclude Include="src\Utils\FileManagement\file_manager.h" />
     <ClInclude Include="src\Utils\utils.hpp" />
     <ClInclude Include="src\Window\window.hpp" />
+    <ClInclude Include="ThirdParty\imgui-master\imconfig.h" />
+    <ClInclude Include="ThirdParty\imgui-master\imgui.h" />
+    <ClInclude Include="ThirdParty\imgui-master\imgui_internal.h" />
+    <ClInclude Include="ThirdParty\imgui-master\imstb_rectpack.h" />
+    <ClInclude Include="ThirdParty\imgui-master\imstb_textedit.h" />
+    <ClInclude Include="ThirdParty\imgui-master\imstb_truetype.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\compile.bat" />

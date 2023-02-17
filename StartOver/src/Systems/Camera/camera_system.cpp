@@ -47,6 +47,7 @@ namespace Systems {
 		camera.setViewYXZ(objTransfomr.position, objTransfomr.rotation);
 
 		camera.setPerspectiveProjection(glm::radians(50.0f));
+		//camera.setOrthographicProjection(1.f,10.f,-10.f,10.f);
 	}
 
 }

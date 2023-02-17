@@ -9,8 +9,8 @@ namespace Components {
 	class CameraComponent {
 	public:
 		float nearPlane{ 0.1 };
-		float farPlane{ 100 };
-		bool orthographic{ false };
+		float farPlane{ 1000 };
+		bool orthographic{ true };
 		float aspect{ 1.0f };
 
 		void setOrthographicProjection(float left, float right, float top, float bottom);

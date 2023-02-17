@@ -3,4 +3,4 @@
 #include "camera.hpp"
 #include "mesh_renderer.hpp"
 #include "pointlight_component.hpp"
-#include "aabb_collider.hpp"
+#include "Physics/box_collider.hpp"

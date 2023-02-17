@@ -9,6 +9,7 @@
 #include "Systems/Renderable/wireframe_render_system.hpp"
 #include "Systems/Renderable/solid_mode_render_system.hpp"
 #include "Systems/Renderable/light_source_render_system.hpp"
+#include "Systems/Renderable/debug_collision_render_system.hpp"
 #include "Systems/Camera/camera_system.hpp"
 
 #define GLM_FORCE_RADIANS
@@ -34,11 +35,13 @@ namespace SO {
 	std::shared_ptr<Systems::WireframeRenderSystem> wireframeRenderS;
 	std::shared_ptr<Systems::SolidModeRenderSystem> SolidModeRenderS;
 	std::shared_ptr<Systems::PointLightRenderSystem> pointLightRenderS;
+	std::shared_ptr<Systems::DebugCollisionRenderSystem> debugCollRenderS;
 
 	bool
 		enableWireFrame = false,
 		enableSolidMode = false,
-		enableRenderView = true;
+		enableRenderView = true,
+		enableDebugCollView = false;
 
 	App::App() {
 		manager.Init();
@@ -47,7 +50,7 @@ namespace SO {
 		manager.RegisterComponent<MovementComponent>();
 		manager.RegisterComponent<Components::MeshRenderer>();
 		manager.RegisterComponent<Components::PointLightComponent>();
-		manager.RegisterComponent<Components::AABBCollider>();
+		manager.RegisterComponent<Components::BoxCollider>();
 
 		cameraS = manager.RegisterSystem<Systems::CameraSystem>();
 		{
@@ -61,7 +64,7 @@ namespace SO {
 			Signature signature, ro_signature;
 			signature.set(manager.GetComponentType<Components::TransformComponent>());
 			signature.set(manager.GetComponentType<MovementComponent>());
-			signature.set(manager.GetComponentType<Components::AABBCollider>());
+			signature.set(manager.GetComponentType<Components::BoxCollider>());
 			manager.SetSystemSignature<Systems::PhysicsSystem>(signature);
 		}
 		renderablesS = manager.RegisterSystem<Systems::RenderablesSystem>();
@@ -89,6 +92,13 @@ namespace SO {
 			signature.set(manager.GetComponentType<Components::PointLightComponent>());
 			manager.SetSystemSignature<Systems::PointLightRenderSystem>(signature);
 		}
+		debugCollRenderS = manager.RegisterSystem<Systems::DebugCollisionRenderSystem>();
+		{
+			Signature signature;
+			signature.set(manager.GetComponentType<Components::TransformComponent>());
+			signature.set(manager.GetComponentType<Components::BoxCollider>());
+			manager.SetSystemSignature<Systems::DebugCollisionRenderSystem>(signature);
+		}
 
 
 		globalPool = DescriptorPool::Builder(*rDevice)
@@ -101,19 +111,44 @@ namespace SO {
 	}
 
 	void processInputs(GLFWwindow* window) {
-		if (glfwGetKey(window, GLFW_KEY_0) == GLFW_PRESS) {
+		
+		if (glfwGetKey(window, GLFW_KEY_0) == GLFW_PRESS && enableWireFrame) {
+			//disable if enabled
+			enableWireFrame = false;
+			if (!enableSolidMode && !enableDebugCollView)	enableRenderView = true;
+		}else if (glfwGetKey(window, GLFW_KEY_0) == GLFW_PRESS) {
+			//enable
 			enableWireFrame = true;
 			enableRenderView = false;
 		}
-		if (glfwGetKey(window, GLFW_KEY_9) == GLFW_PRESS) {
+
+		if (glfwGetKey(window, GLFW_KEY_9) == GLFW_PRESS && enableSolidMode) {
+			//disable if enabled
+			enableSolidMode = false;
+			if (!enableWireFrame && !enableDebugCollView)	enableRenderView = true;
+		}else if (glfwGetKey(window, GLFW_KEY_9) == GLFW_PRESS) {
+			//enable
 			enableRenderView = false;
 			enableSolidMode = true;
 		}
-		if (glfwGetKey(window, GLFW_KEY_8) == GLFW_PRESS) {
+
+		if (glfwGetKey(window, GLFW_KEY_8) == GLFW_PRESS && enableDebugCollView) {
+			//disable if enabled
+			enableDebugCollView = false;
+			if (!enableWireFrame && !enableSolidMode)	enableRenderView = true;
+		}else if (glfwGetKey(window, GLFW_KEY_8) == GLFW_PRESS) {
+			//enable
+			enableDebugCollView = true;
+		}
+		
+		if (glfwGetKey(window, GLFW_KEY_7) == GLFW_PRESS) {
 			enableWireFrame = false;
 			enableSolidMode = false;
 			enableRenderView = true;
 		}
+
+
+
 	}
 
 	void App::run() {
@@ -145,6 +180,7 @@ namespace SO {
 		wireframeRenderS->init(rDevice, gRenderer.getSwapChainRenderPass(), globalSetLayout->getDescriptorSetLayout());
 		SolidModeRenderS->init(rDevice, gRenderer.getSwapChainRenderPass(), globalSetLayout->getDescriptorSetLayout());
 		pointLightRenderS->init(rDevice, gRenderer.getSwapChainRenderPass(), globalSetLayout->getDescriptorSetLayout());
+		debugCollRenderS->init(rDevice, gRenderer.getSwapChainRenderPass(), globalSetLayout->getDescriptorSetLayout());
 
 		GameObject camObj = GameObject::createGameObject(
 			Components::TransformComponent{
@@ -198,10 +234,12 @@ namespace SO {
 				gRenderer.beginSwapChainRenderPass(commandBuffer);
 				if (enableWireFrame)	wireframeRenderS->render(frameInfo);
 				if (enableSolidMode)	SolidModeRenderS->render(frameInfo);
+				if (enableDebugCollView)debugCollRenderS->render(frameInfo);
 				if (enableRenderView) {
 					pointLightRenderS->render(frameInfo);
 					renderablesS->render(frameInfo);
 				}
+
 				gRenderer.endSwapChainRenderPass(commandBuffer);
 				gRenderer.endFrame();
 			}
@@ -213,6 +251,7 @@ namespace SO {
 		wireframeRenderS->shutDown();
 		SolidModeRenderS->shutDown();
 		pointLightRenderS->shutDown();
+		debugCollRenderS->shutDown();
 	}
 
     // temporary helper function, creates a 1x1x1 cube centered at offset
@@ -265,7 +304,8 @@ namespace SO {
 		GameObject cube = GameObject::createGameObject(trans);
 		cube.AddComponent(
 			Components::MeshRenderer{
-				Loader::LoadObjFormat("C:\\VStudio\\StartOver\\StartOver\\assets\\models\\colored_cube.obj")
+				//Loader::LoadObjFormat("C:\\VStudio\\StartOver\\StartOver\\assets\\models\\colored_cube.obj")
+				Loader::LoadObjFormat("C:\\VStudio\\StartOver\\StartOver\\assets\\models\\spher.obj")
 			}
 		);
 		cube.AddComponent(
@@ -274,36 +314,16 @@ namespace SO {
 			}
 		);
 		cube.AddComponent(
-			Components::AABBCollider(
+			Components::BoxCollider(
 				cube.transform.position,
 				glm::vec3{ 1.f, 1.f, 1.f }
 			)
 		);
 
 
-
-		trans.position = { 5.f, 0.f, 5.f };
-		trans.scale = { 2.f, 2.f, 2.f };
-		GameObject cube1 = GameObject::createGameObject(trans);
-		cube1.AddComponent(
-			Components::MeshRenderer{
-				Loader::LoadObjFormat("C:\\VStudio\\StartOver\\StartOver\\assets\\models\\smooth_vase.obj")
-			}
-		);
-
-
-		trans.position = { -1.5f, 0.f, 0.f };
-		trans.scale = { 2.2f,3.f,1.5f };
-		GameObject cube2 = GameObject::createGameObject(trans);
-		cube2.AddComponent(
-			Components::MeshRenderer{
-				Loader::LoadObjFormat("C:\\VStudio\\StartOver\\StartOver\\assets\\models\\flat_vase.obj")
-			}
-		);
-
 		//ground
 		trans.position = { .0f, .0f, .0f };
-		trans.scale = { 24.f, 1.f, 24.f };
+		trans.scale = { 204.f, 1.f, 204.f };
 		GameObject cube3 = GameObject::createGameObject(trans);
 		cube3.AddComponent(
 			Components::MeshRenderer{

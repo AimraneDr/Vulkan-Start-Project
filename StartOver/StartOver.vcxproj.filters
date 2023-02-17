@@ -23,6 +23,12 @@
     <ClCompile Include="src\Systems\Renderable\wireframe_render_system.cpp" />
     <ClCompile Include="src\Systems\Renderable\solid_mode_render_system.cpp" />
     <ClCompile Include="src\Resources\resources_loader.cpp" />
+    <ClCompile Include="src\Systems\Renderable\debug_collision_render_system.cpp" />
+    <ClCompile Include="ThirdParty\imgui-master\imgui.cpp" />
+    <ClCompile Include="ThirdParty\imgui-master\imgui_demo.cpp" />
+    <ClCompile Include="ThirdParty\imgui-master\imgui_draw.cpp" />
+    <ClCompile Include="ThirdParty\imgui-master\imgui_tables.cpp" />
+    <ClCompile Include="ThirdParty\imgui-master\imgui_widgets.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Window\window.hpp" />
@@ -55,11 +61,18 @@
     <ClInclude Include="src\Systems\Camera\camera_system.hpp" />
     <ClInclude Include="src\Components\components.h" />
     <ClInclude Include="src\Components\transform.hpp" />
-    <ClInclude Include="src\Components\aabb_collider.hpp" />
+    <ClInclude Include="src\Components\Physics\box_collider.hpp" />
     <ClInclude Include="src\Systems\Renderable\wireframe_render_system.hpp" />
     <ClInclude Include="src\Systems\Renderable\solid_mode_render_system.hpp" />
     <ClInclude Include="src\Resources\resources_loader.hpp" />
     <ClInclude Include="src\defines.h" />
+    <ClInclude Include="src\Systems\Renderable\debug_collision_render_system.hpp" />
+    <ClInclude Include="ThirdParty\imgui-master\imconfig.h" />
+    <ClInclude Include="ThirdParty\imgui-master\imgui.h" />
+    <ClInclude Include="ThirdParty\imgui-master\imgui_internal.h" />
+    <ClInclude Include="ThirdParty\imgui-master\imstb_rectpack.h" />
+    <ClInclude Include="ThirdParty\imgui-master\imstb_textedit.h" />
+    <ClInclude Include="ThirdParty\imgui-master\imstb_truetype.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\simple.vert" />

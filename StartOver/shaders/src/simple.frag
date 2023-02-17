@@ -59,5 +59,5 @@ void main(){
   float directionalLightIntensity = max(dot(normalize(fragNormalWorld), normalize(ubo.directionalLight.xyz)),0);
   // outColor = vec4(diffuseLight * fragColor + specularLight * fragColor + directionalLightIntensity * fragColor , 1.0);
 
-  outColor = vec4(diffuseLight * fragColor + specularLight * fragColor , 1.0);// + vec4(fragColor * directionalLightIntensity, 1.0);
+  outColor = vec4(diffuseLight * fragColor + specularLight * fragColor  , 1.0);
 }
