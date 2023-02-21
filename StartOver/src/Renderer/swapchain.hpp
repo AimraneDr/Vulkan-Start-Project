@@ -48,8 +48,13 @@ namespace SO {
 		VkRenderPass renderPass;
 
 		std::vector<VkImage> depthImages;
-		std::vector<VkDeviceMemory> depthImageMemorys;
+		std::vector<VkDeviceMemory> depthImageMemories;
 		std::vector<VkImageView> depthImageViews;
+
+		std::vector<VkImage> colorImages;
+		std::vector<VkDeviceMemory> colorImageMemories;
+		std::vector<VkImageView> colorImageViews;
+
 		std::vector<VkImage> swapChainImages;
 		std::vector<VkImageView> swapChainImageViews;
 
@@ -68,6 +73,7 @@ namespace SO {
 		void init();
 		void createSwapChain();
 		void createImageViews();
+		void createColorResources();
 		void createDepthResources();
 		void createRenderPass();
 		void createFramebuffers();

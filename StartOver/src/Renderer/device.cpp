@@ -11,6 +11,7 @@ namespace SO {
     //reference to the rendering device after it is created
     RendererDevice* RendererDevice::globalDevice;
 
+    
 
     // local callback functions
     static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(
@@ -140,7 +141,20 @@ namespace SO {
         
         vkGetPhysicalDeviceProperties(physicalDevice, &properties);
         std::cout << "physical device: " << properties.deviceName << std::endl;
+        std::cout << "Linit Samples Count: " << properties.limits.framebufferColorSampleCounts << std::endl;
+        
+        //set to the low max samples
+        VkSampleCountFlags counts = properties.limits.framebufferColorSampleCounts & properties.limits.framebufferDepthSampleCounts;
+        if (counts & VK_SAMPLE_COUNT_64_BIT) { _msaaSamples = VK_SAMPLE_COUNT_64_BIT; }
+        else if (counts & VK_SAMPLE_COUNT_32_BIT) { _msaaSamples = VK_SAMPLE_COUNT_32_BIT; }
+        else if (counts & VK_SAMPLE_COUNT_16_BIT) { _msaaSamples = VK_SAMPLE_COUNT_16_BIT; }
+        else if (counts & VK_SAMPLE_COUNT_8_BIT) { _msaaSamples = VK_SAMPLE_COUNT_8_BIT; }
+        else if (counts & VK_SAMPLE_COUNT_4_BIT) { _msaaSamples = VK_SAMPLE_COUNT_4_BIT; }
+        else if (counts & VK_SAMPLE_COUNT_2_BIT) { _msaaSamples = VK_SAMPLE_COUNT_2_BIT; }
+        
+
     }
+
 
     void RendererDevice::createLogicalDevice() {
         QueueFamilyIndices indices = findQueueFamilies(physicalDevice);

@@ -76,7 +76,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\libs\glm;C:\libs\glfw-3.3.8.bin.WIN64\include;C:\VulkanSDK\1.3.231.1\Include;C:\libs\stb;C:\libs\TinyObjLoader;$(ProjectDir)src;$(ProjectDir)ThirdParty\imgui-master;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\libs\glm;C:\libs\glfw-3.3.8.bin.WIN64\include;C:\VulkanSDK\1.3.231.1\Include;C:\libs\stb;C:\libs\TinyObjLoader;$(ProjectDir)src;$(ProjectDir)ThirdParty\imgui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <ShowIncludes>true</ShowIncludes>
     </ClCompile>
@@ -98,7 +98,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\libs\glm;C:\libs\glfw-3.3.8.bin.WIN64\include;C:\VulkanSDK\1.3.231.1\Include;C:\libs\stb;C:\libs\TinyObjLoader;$(ProjectDir)src;$(ProjectDir)ThirdParty\imgui-master;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\libs\glm;C:\libs\glfw-3.3.8.bin.WIN64\include;C:\VulkanSDK\1.3.231.1\Include;C:\libs\stb;C:\libs\TinyObjLoader;$(ProjectDir)src;$(ProjectDir)ThirdParty\imgui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <ShowIncludes>true</ShowIncludes>
     </ClCompile>
@@ -120,7 +120,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\libs\glm;C:\libs\glfw-3.3.8.bin.WIN64\include;C:\VulkanSDK\1.3.231.1\Include;C:\libs\stb;C:\libs\TinyObjLoader;$(ProjectDir)src;$(ProjectDir)ThirdParty\imgui-master;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\libs\glm;C:\libs\glfw-3.3.8.bin.WIN64\include;C:\VulkanSDK\1.3.231.1\Include;C:\libs\stb;C:\libs\TinyObjLoader;$(ProjectDir)src;$(ProjectDir)ThirdParty\imgui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <ShowIncludes>true</ShowIncludes>
     </ClCompile>
@@ -142,7 +142,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\libs\glm;C:\libs\glfw-3.3.8.bin.WIN64\include;C:\VulkanSDK\1.3.231.1\Include;C:\libs\stb;C:\libs\TinyObjLoader;$(ProjectDir)src;$(ProjectDir)ThirdParty\imgui-master;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\libs\glm;C:\libs\glfw-3.3.8.bin.WIN64\include;C:\VulkanSDK\1.3.231.1\Include;C:\libs\stb;C:\libs\TinyObjLoader;$(ProjectDir)src;$(ProjectDir)ThirdParty\imgui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <ShowIncludes>true</ShowIncludes>
     </ClCompile>
@@ -182,11 +182,11 @@
     <ClCompile Include="src\Systems\Renderable\wireframe_render_system.cpp" />
     <ClCompile Include="src\Utils\FileManagement\file_manager.cpp" />
     <ClCompile Include="src\Window\window.cpp" />
-    <ClCompile Include="ThirdParty\imgui-master\imgui.cpp" />
-    <ClCompile Include="ThirdParty\imgui-master\imgui_demo.cpp" />
-    <ClCompile Include="ThirdParty\imgui-master\imgui_draw.cpp" />
-    <ClCompile Include="ThirdParty\imgui-master\imgui_tables.cpp" />
-    <ClCompile Include="ThirdParty\imgui-master\imgui_widgets.cpp" />
+    <ClCompile Include="ThirdParty\imgui\imgui.cpp" />
+    <ClCompile Include="ThirdParty\imgui\imgui_demo.cpp" />
+    <ClCompile Include="ThirdParty\imgui\imgui_draw.cpp" />
+    <ClCompile Include="ThirdParty\imgui\imgui_tables.cpp" />
+    <ClCompile Include="ThirdParty\imgui\imgui_widgets.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Application\application.hpp" />
@@ -225,12 +225,12 @@
     <ClInclude Include="src\Utils\FileManagement\file_manager.h" />
     <ClInclude Include="src\Utils\utils.hpp" />
     <ClInclude Include="src\Window\window.hpp" />
-    <ClInclude Include="ThirdParty\imgui-master\imconfig.h" />
-    <ClInclude Include="ThirdParty\imgui-master\imgui.h" />
-    <ClInclude Include="ThirdParty\imgui-master\imgui_internal.h" />
-    <ClInclude Include="ThirdParty\imgui-master\imstb_rectpack.h" />
-    <ClInclude Include="ThirdParty\imgui-master\imstb_textedit.h" />
-    <ClInclude Include="ThirdParty\imgui-master\imstb_truetype.h" />
+    <ClInclude Include="ThirdParty\imgui\imconfig.h" />
+    <ClInclude Include="ThirdParty\imgui\imgui.h" />
+    <ClInclude Include="ThirdParty\imgui\imgui_internal.h" />
+    <ClInclude Include="ThirdParty\imgui\imstb_rectpack.h" />
+    <ClInclude Include="ThirdParty\imgui\imstb_textedit.h" />
+    <ClInclude Include="ThirdParty\imgui\imstb_truetype.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\compile.bat" />

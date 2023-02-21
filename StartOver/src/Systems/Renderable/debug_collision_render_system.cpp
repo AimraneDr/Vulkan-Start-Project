@@ -57,6 +57,8 @@ namespace Systems {
 		SO::Pipeline::defaultPipelineConfigInfo(configInfo);
 		configInfo.inputAssemblyInfo.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
 		configInfo.rasterizationInfo.polygonMode = VK_POLYGON_MODE_LINE;
+		configInfo.rasterizationInfo.cullMode = VK_CULL_MODE_NONE;
+
 		configInfo.renderpass = renderPass;
 		configInfo.pipelineLayout = pipelineLayout;
 

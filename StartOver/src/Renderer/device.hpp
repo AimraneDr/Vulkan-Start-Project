@@ -16,7 +16,7 @@ namespace SO {
     };
 
 
-	class RendererDevice {
+    class RendererDevice {
     public:
 #ifdef NDEBUG
         const bool enableValidationLayers = false;
@@ -40,6 +40,7 @@ namespace SO {
         VkSurfaceKHR surface() { return surface_; }
         VkQueue graphicsQueue() { return graphicsQueue_; }
         VkQueue presentQueue() { return presentQueue_; }
+        VkSampleCountFlagBits msaaSamples() { return _msaaSamples; }
 
         SwapChainSupportDetails getSwapChainSupport() { return querySwapChainSupport(physicalDevice); }
         uint32_t findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties);
@@ -94,6 +95,8 @@ namespace SO {
         VkSurfaceKHR surface_;
         VkQueue graphicsQueue_;
         VkQueue presentQueue_;
+
+        VkSampleCountFlagBits _msaaSamples{ VK_SAMPLE_COUNT_1_BIT };
 
         const std::vector<const char*> validationLayers = { "VK_LAYER_KHRONOS_validation" };
         const std::vector<const char*> deviceExtensions = { VK_KHR_SWAPCHAIN_EXTENSION_NAME };

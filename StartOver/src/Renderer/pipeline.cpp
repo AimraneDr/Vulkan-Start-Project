@@ -28,7 +28,6 @@ namespace SO {
 
 		config.inputAssemblyInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
 		config.inputAssemblyInfo.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
-		//config.inputAssemblyInfo.topology = VK_PRIMITIVE_TOPOLOGY_LINE_LIST;
 		config.inputAssemblyInfo.primitiveRestartEnable = VK_FALSE;
 
 		config.viewportInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
@@ -41,7 +40,6 @@ namespace SO {
 		config.rasterizationInfo.depthClampEnable = VK_FALSE;
 		config.rasterizationInfo.rasterizerDiscardEnable = VK_FALSE;
 		config.rasterizationInfo.polygonMode = VK_POLYGON_MODE_FILL;
-		//config.rasterizationInfo.polygonMode = VK_POLYGON_MODE_LINE;
 		config.rasterizationInfo.lineWidth = 1.f;
 		config.rasterizationInfo.cullMode = VK_CULL_MODE_BACK_BIT;
 		config.rasterizationInfo.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
@@ -53,7 +51,7 @@ namespace SO {
 		config.multisampleInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
 		config.multisampleInfo.sampleShadingEnable = VK_FALSE; // enable sample shading in the pipeline
 		config.multisampleInfo.minSampleShading = .2f; // min fraction for sample shading; the closer to one the smoother
-		config.multisampleInfo.rasterizationSamples = VK_SAMPLE_COUNT_1_BIT;
+		config.multisampleInfo.rasterizationSamples = RendererDevice::globalDevice->msaaSamples();
 		config.multisampleInfo.pSampleMask = nullptr;	//optional
 		config.multisampleInfo.alphaToCoverageEnable = VK_FALSE;	//Optional
 		config.multisampleInfo.alphaToOneEnable = VK_FALSE;		//Optional

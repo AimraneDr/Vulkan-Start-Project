@@ -43,15 +43,16 @@ namespace SO {
 		enableRenderView = true,
 		enableDebugCollView = false;
 
-	App::App() {
-		manager.Init();
+	void RegisterComponents() {
 		manager.RegisterComponent<Components::CameraComponent>();
 		manager.RegisterComponent<Components::TransformComponent>();
 		manager.RegisterComponent<MovementComponent>();
 		manager.RegisterComponent<Components::MeshRenderer>();
 		manager.RegisterComponent<Components::PointLightComponent>();
 		manager.RegisterComponent<Components::BoxCollider>();
+	}
 
+	void RegisterSystem() {
 		cameraS = manager.RegisterSystem<Systems::CameraSystem>();
 		{
 			Signature signature, ro_signature;
@@ -99,8 +100,12 @@ namespace SO {
 			signature.set(manager.GetComponentType<Components::BoxCollider>());
 			manager.SetSystemSignature<Systems::DebugCollisionRenderSystem>(signature);
 		}
+	}
 
-
+	App::App() {
+		manager.Init();
+		RegisterComponents();
+		RegisterSystem();
 		globalPool = DescriptorPool::Builder(*rDevice)
 			.setMaxSets(SwapChain::MAX_FRAMES_IN_FLIGHT)
 			.addPoolSize(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, SwapChain::MAX_FRAMES_IN_FLIGHT)
